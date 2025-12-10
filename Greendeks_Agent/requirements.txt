@@ -1,0 +1,11 @@
+langchain
+langchain-openai
+langchain-community
+langchain-chroma
+pandas
+openpyxl
+pypdf
+python-dotenv
+chromadb
+tabulate
+msoffcrypto-tool

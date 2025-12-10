@@ -1,0 +1,32 @@
+# --- Python Gereksizleri ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Sanal Ortam (KESİNLİKLE GİTMEMELİ) ---
+.venv/
+venv/
+env/
+.env
+include/
+Lib/
+Scripts/
+share/
+
+
+# --- IDE Ayarları (Kişiseldir, paylaşılmaz) ---
+.idea/
+.vscode/
+*.swp
+
+# --- Vektör Veritabanı (Kod her çalıştığında yeniden üretir) ---
+# Bunu GitHub'a atarsan dosya boyutu şişer ve konflikt çıkar.
+data/chroma_db/
+chroma_db/
+data/inputs
+
+
+# --- İşletim Sistemi Dosyaları ---
+.DS_Store
+Thumbs.db
