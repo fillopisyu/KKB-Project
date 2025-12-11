@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import time
 import json
+import concurrent.futures
 from langchain_core.messages import HumanMessage
 from agents.data_agent import get_data_agent
 from agents.doc_agent import get_doc_agent
@@ -154,10 +155,14 @@ def solve_question_autofill(question_obj, manual_urls=None):
     - Doküman: {doc_res}
     - Web: {web_res}
     
+    ÖNEMLİ: Eğer soru belirli bir birimde cevap istiyorsa (örn: kWh, kg, litre), 
+    kaynaklarda farklı birimlerde veri varsa (MWh, ton, m³) mutlaka dönüştür!
+    
     İSTENEN ÇIKTI (JSON):
     {{
       "suggested_value": "Bulduğun en doğru cevap (Metin, Sayı veya Seçenek)",
-      "selected_id": "Eğer şıklıysa eşleşen answerId (yoksa null)",
+      "selected_id": "Eğer singleChoice ise eşleşen answerId (yoksa null)",
+      "selected_ids": "Eğer multiChoice ise eşleşen answerId'lerin listesi (örn: [1, 3, 5])",
       "confidence_score": 0-100 arası sayı,
       "evidence_summary": "Bu cevabı neden seçtiğine dair 1 cümlelik kanıt/kaynak."
     }}
@@ -174,7 +179,8 @@ def solve_question_autofill(question_obj, manual_urls=None):
 
 # --- INITIALIZATION ---
 if "messages" not in st.session_state: st.session_state.messages = []
-if "target_urls" not in st.session_state: st.session_state.target_urls = []
+if "target_urls" not in st.session_state: 
+    st.session_state.target_urls = ["https://www.akbankinvestorrelations.com/tr/"]
 if "form_data" not in st.session_state: st.session_state.form_data = {} # To store filled values
 if "form_questions" not in st.session_state: st.session_state.form_questions = []
 
@@ -239,20 +245,36 @@ with tab1:
     if st.session_state.form_questions:
         if st.button("✨ Yapay Zeka ile Formu Doldur", type="primary"):
             prog_bar = st.progress(0, "Analiz Başlıyor...")
-            for i, q in enumerate(st.session_state.form_questions):
-                qid = q["questionId"]
-                prog_bar.progress((i)/len(st.session_state.form_questions), f"Soru {qid} analizi...")
-                
-                # AI ÇÖZÜMÜ
-                ai_res = solve_question_autofill(q, st.session_state.target_urls)
-                
-                # STATE'E KAYDET
-                st.session_state.form_data[qid] = {
-                    "value": ai_res.get("suggested_value"),
-                    "selected_id": ai_res.get("selected_id"),
-                    "confidence": ai_res.get("confidence_score"),
-                    "evidence": ai_res.get("evidence_summary")
+            # PARALLEL PROCESSING
+            total_questions = len(st.session_state.form_questions)
+            completed_count = 0
+            
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+                # Submit all tasks
+                future_to_qid = {
+                    executor.submit(solve_question_autofill, q, st.session_state.target_urls): q["questionId"] 
+                    for q in st.session_state.form_questions
                 }
+                
+                # Process as they complete
+                for future in concurrent.futures.as_completed(future_to_qid):
+                    qid = future_to_qid[future]
+                    try:
+                        ai_res = future.result()
+                        # STATE'E KAYDET
+                        st.session_state.form_data[qid] = {
+                            "value": ai_res.get("suggested_value"),
+                            "selected_id": ai_res.get("selected_id"),
+                            "selected_ids": ai_res.get("selected_ids", []),
+                            "confidence": ai_res.get("confidence_score"),
+                            "evidence": ai_res.get("evidence_summary")
+                        }
+                    except Exception as e:
+                        print(f"Error processing question {qid}: {e}")
+                    
+                    completed_count += 1
+                    prog_bar.progress(completed_count / total_questions, f"Analiz ediliyor... ({completed_count}/{total_questions})")
+            
             prog_bar.empty()
             st.success("Analiz Tamamlandı! Lütfen cevapları kontrol ediniz.")
 
@@ -293,7 +315,18 @@ with tab1:
                 elif qtype == "multiChoice":
                     options = q.get("answers", [])
                     opt_labels = [o["answerDescription"] for o in options]
-                    st.multiselect("Seçimleriniz:", opt_labels, key=f"wdg_{qid}")
+                    opt_ids = [o["answerId"] for o in options]
+                    
+                    # Get AI-selected IDs and find matching labels
+                    sel_ids = ai_data.get("selected_ids", [])
+                    default_selections = []
+                    if sel_ids:
+                        for sel_id in sel_ids:
+                            if sel_id in opt_ids:
+                                idx = opt_ids.index(sel_id)
+                                default_selections.append(opt_labels[idx])
+                    
+                    st.multiselect("Seçimleriniz:", opt_labels, default=default_selections, key=f"wdg_{qid}")
                 
                 else: # openText, numeric
                     st.text_area("Yanıt:", value=str(current_val), key=f"wdg_{qid}")

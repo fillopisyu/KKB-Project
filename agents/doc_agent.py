@@ -1,4 +1,5 @@
 import os
+import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain_chroma import Chroma
 from langchain_core.tools import Tool
@@ -26,6 +27,7 @@ def create_retriever_tool_manual(retriever, name, description):
     )
 
 
+@st.cache_resource
 def get_doc_agent():
     """
     LangChain v1 uyumlu Doküman Ajanı.
@@ -66,6 +68,18 @@ def get_doc_agent():
         1. Asla uydurma, mutlaka dokümanda ara.
         2. Her bilginin yanına (Kaynak: Faaliyet Raporu) gibi not düş.
         3. Bilgi yoksa "Dokümanlarda bulunamadı" de.
+        
+        BİRİM DÖNÜŞÜMLERİ:
+        4. Eğer soru belirli bir birimde (örn: kWh) cevap istiyorsa, dokümanda farklı birimlerde (MWh, GWh) veri olabilir.
+        5. Mutlaka birim dönüşümü yap ve doğru sonucu ver.
+        
+        Önemli Dönüşümler:
+        - Enerji: 1 MWh = 1,000 kWh | 1 GWh = 1,000,000 kWh
+        - Emisyon: 1 ton = 1,000 kg | 1 kton = 1,000 ton
+        - Su: 1 m³ = 1,000 litre
+        
+        Örnek: Soru "kWh cinsinden elektrik tüketimi" soruyor ama dokümanda "150 MWh" yazıyorsa, 
+        cevabın "150,000 kWh" olmalı.
         """
     )
 
