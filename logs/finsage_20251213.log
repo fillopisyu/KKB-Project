@@ -162,3 +162,124 @@
 2025-12-13 14:32:03 - finsage - INFO - Qq6: Doc agent response length: 155
 2025-12-13 14:32:10 - finsage - INFO - Qq2: Analysis complete - Confidence: 98%, Time: 166.82s
 2025-12-13 14:32:11 - finsage - INFO - Qq6: Analysis complete - Confidence: 95%, Time: 139.68s
+2025-12-13 14:58:15 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 14:58:15 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 14:58:15 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 14:58:15 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 14:58:15 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 14:58:15 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 14:58:18 - finsage - INFO - Qq1: Data agent response length: 35
+2025-12-13 14:58:19 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 14:58:24 - finsage - INFO - Qq4: Data agent response length: 393
+2025-12-13 14:58:25 - finsage - INFO - Qq2: Data agent response length: 190
+2025-12-13 14:58:37 - finsage - INFO - Qq3: Data agent response length: 795
+2025-12-13 14:58:45 - finsage - INFO - Qq4: Doc agent response length: 850
+2025-12-13 14:58:53 - finsage - INFO - Qq4: Analysis complete - Confidence: 98%, Time: 37.78s
+2025-12-13 14:58:53 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 14:59:18 - finsage - INFO - Qq6: Data agent response length: 469
+2025-12-13 14:59:47 - finsage - INFO - Qq5: Doc agent response length: 1938
+2025-12-13 14:59:49 - finsage - INFO - Qq1: Doc agent response length: 745
+2025-12-13 14:59:57 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 101.41s
+2025-12-13 14:59:58 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 102.80s
+2025-12-13 15:00:01 - finsage - INFO - Qq3: Doc agent response length: 278
+2025-12-13 15:00:09 - finsage - INFO - Qq3: Analysis complete - Confidence: 95%, Time: 113.36s
+2025-12-13 15:00:37 - finsage - INFO - Qq2: Doc agent response length: 215
+2025-12-13 15:00:43 - finsage - INFO - Qq2: Analysis complete - Confidence: 97%, Time: 148.22s
+2025-12-13 15:00:44 - finsage - INFO - Qq6: Doc agent response length: 271
+2025-12-13 15:00:48 - finsage - INFO - Qq6: Analysis complete - Confidence: 95%, Time: 115.40s
+2025-12-13 15:09:28 - finsage - INFO - Form submitted by user
+2025-12-13 15:09:28 - finsage - INFO - Form exported with 6 answers
+2025-12-13 16:36:46 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 16:36:46 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 16:36:46 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 16:36:46 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 16:36:46 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 16:36:46 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 16:36:50 - finsage - INFO - Qq1: Data agent response length: 38
+2025-12-13 16:36:50 - finsage - INFO - Qq4: Data agent response length: 38
+2025-12-13 16:36:51 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 16:36:54 - finsage - INFO - Qq2: Data agent response length: 19
+2025-12-13 16:37:02 - finsage - INFO - Qq1: Doc agent response length: 1072
+2025-12-13 16:37:05 - finsage - INFO - Qq3: Data agent response length: 672
+2025-12-13 16:37:06 - finsage - INFO - LLM Confidence: 95/100 (>= 60) → SKIP web scraper | Reason: Cevap doğrudan ve net; Akbank 2023 Entegre Faaliyet Raporu'ndan sayfa numarasıyla birlikte insan hakları ve çocuk işçi çalıştırılmasını önleyici politika varlığı belirtilmiş. Kaynak güvenilir ve soruyla tam eşleşiyor.
+2025-12-13 16:37:10 - finsage - INFO - Qq4: Doc agent response length: 826
+2025-12-13 16:37:16 - finsage - INFO - LLM Confidence: 94/100 (>= 60) → SKIP web scraper | Reason: Soruya doğrudan 'evet' yanıtı veriliyor ve detaylı uygulama açıklamaları, sayfa numarası ve rapor adı gibi kesin kaynaklar sağlanmış. Kaynak (akbank-2023-entegre‑faaliyet‑raporu) güvenilir bir şirket sürdürülebilirlik raporu olduğundan bilgi yüksek güvenilirlik taşır.
+2025-12-13 16:37:17 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 31.00s
+2025-12-13 16:37:17 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 16:37:23 - finsage - INFO - Qq4: Analysis complete - Confidence: 95%, Time: 36.69s
+2025-12-13 16:37:36 - finsage - INFO - Qq6: Data agent response length: 514
+2025-12-13 16:37:45 - finsage - INFO - Qq5: Doc agent response length: 527
+2025-12-13 16:37:52 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Belirtilen malzeme listesi soruya doğrudan yanıt veriyor ve Akbank 2023 Entegre Faaliyet Raporu’ndan sayfa numarasıyla desteklenmiştir; kaynak güvenilir ve ilgili soruya tam uyumlu. Veri tablosunda bulunamadığı bilgisi çelişki yaratmıyor, sadece yapılandırılmış veri eksikliğini gösteriyor.
+2025-12-13 16:38:02 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 75.43s
+2025-12-13 16:38:49 - finsage - INFO - Qq2: Doc agent response length: 209
+2025-12-13 16:38:57 - finsage - INFO - LLM Confidence: 45/100 (< 60) → TRIGGER web scraper | Reason: Document Agent sağladığı sayı (61 706 tCO₂e) ve sayfa numarasıyla net bir kaynak veriyor, bu yüksek bir güven sağlar. Ancak aynı soruya Data Agent tarafından verilen 11 932 tCO₂e değeri kaynak belirtilmeden ve Document Agent ile çelişiyor. Çelişki ve eksik kaynak nedeniyle bütün cevapların güvenilirliği orta‑düşük seviyede.
+2025-12-13 16:39:06 - finsage - INFO - Qq2: Analysis complete - Confidence: 95%, Time: 139.29s
+2025-12-13 16:39:22 - finsage - INFO - Qq3: Doc agent response length: 817
+2025-12-13 16:39:35 - finsage - INFO - LLM Confidence: 35/100 (< 60) → TRIGGER web scraper | Reason: Cevaplar çelişkili. Doküman ajanı elektrik tüketiminin GJ olarak raporlanmadığını, sadece toplam enerji verildiğini belirtiyor ve kWh dönüşümü yapılamadığını söylüyor. Veri ajanı ise bir tabloda çok büyük bir “Elektrik tüketimi (Gj)” değeri vererek kWh’ye çeviriyor, ancak kaynağa (sayfa, tablo numarası) dair kesin bir referans yok ve Document Agent ile çelişiyor. Bu tutarsızlık ve eksik kaynak gösterimi nedeniyle verilen sayısal değer güvenilirlik açısından düşük.
+2025-12-13 16:39:46 - finsage - INFO - Qq3: Analysis complete - Confidence: 80%, Time: 179.50s
+2025-12-13 16:39:47 - finsage - INFO - Qq6: Doc agent response length: 160
+2025-12-13 16:39:51 - finsage - INFO - LLM Confidence: 72/100 (>= 60) → SKIP web scraper | Reason: Veri ajanı, soruya doğrudan yanıt veren ve engelli çalışan yüzdesini yıllara göre gösteren tablo sunmuş, hesaplama yöntemi açık. Ancak kaynak belirtilmemiş, belge adı ya da sayfa numarası yok ve doküman ajanı veri bulunmadığını iddia ediyor, bu da çelişki yaratarak güveni biraz düşürüyor.
+2025-12-13 16:39:57 - finsage - INFO - Qq6: Analysis complete - Confidence: 98%, Time: 159.92s
+2025-12-13 16:50:10 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 16:50:10 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 16:50:10 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 16:50:10 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 16:50:10 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 16:50:10 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 16:50:12 - finsage - INFO - Qq1: Data agent response length: 35
+2025-12-13 16:50:13 - finsage - INFO - Qq5: Data agent response length: 35
+2025-12-13 16:50:13 - finsage - INFO - Qq4: Data agent response length: 38
+2025-12-13 16:50:21 - finsage - INFO - Qq2: Data agent response length: 250
+2025-12-13 16:50:23 - finsage - INFO - Qq4: Doc agent response length: 536
+2025-12-13 16:50:28 - finsage - INFO - LLM Confidence: 93/100 (>= 60) → SKIP web scraper | Reason: Doküman ajanı, akbank'ın tesislerinde atık ayrıştırma pratiği yaptığını, yıl, yer ve detaylarıyla (Sayfa 130, akbank‑2023‑entegre‑faaliyet‑raporu) net bir şekilde belirtmiş. Kaynak güvenilir ve soruyla doğrudan uyumlu. Veri ajanının tabloda bilgi bulunmadığını söylemesi çelişki yaratmıyor, sadece ek bilgi eksikliğini gösteriyor. Bu nedenle yüksek güven.
+2025-12-13 16:50:34 - finsage - INFO - Qq4: Analysis complete - Confidence: 95%, Time: 23.93s
+2025-12-13 16:50:34 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 16:50:49 - finsage - INFO - Qq3: Data agent response length: 989
+2025-12-13 16:50:57 - finsage - INFO - Qq6: Data agent response length: 591
+2025-12-13 16:51:01 - finsage - INFO - Qq1: Doc agent response length: 680
+2025-12-13 16:51:08 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Document Agent kesin ve detaylı yanıt veriyor; Akbank’ın 2023 Entegre Faaliyet Raporu’nda insan hakları ve çocuk işçi önleme politikaları olduğu açıkça belirtilmiş, sayfa numaraları ve kaynak gösterilmiş. Kaynak güvenilir ve soruya doğrudan cevap veriyor. Veri Agent’ın “veri yok” demesi ek bir bilgi eksikliği olarak görülse de mevcut belge kanıtı yeterli olduğundan yüksek güven veriyorum.
+2025-12-13 16:51:20 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 70.18s
+2025-12-13 16:51:27 - finsage - INFO - Qq5: Doc agent response length: 505
+2025-12-13 16:51:31 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Soruya doğrudan, eksiksiz bir cevap verilmiş; ayrıştırılan malzemeler listelenmiş ve güvenilir bir kaynak (akbank 2023 entegre faaliyet raporu, sayfa 130) belirtilmiş. Kaynak referansı açık, bilgi soruya tam uyuyor, bu yüzden yüksek güven puanı verildi.
+2025-12-13 16:51:39 - finsage - INFO - Qq5: Analysis complete - Confidence: 100%, Time: 89.06s
+2025-12-13 16:52:20 - finsage - INFO - Qq2: Doc agent response length: 196
+2025-12-13 16:52:28 - finsage - INFO - LLM Confidence: 55/100 (< 60) → TRIGGER web scraper | Reason: Cevaplar arasında tutarsızlık var. Dokument ajanı 2023 yılı için 506 tCO₂e olarak tek bir değer veriyor ve kaynak belirtilmiş (sayfa 270). Veri ajanı ise 2019‑2023 yıllarına ait bir tablo ve toplam 69 108.05 tCO₂e sunuyor, fakat kaynak belirtilmemiş ve hangi şirkete ait olduğu net değil. Soru “Toplam KAPSAM 1 emisyonları” ifadesi tek bir yıl mı yoksa tüm dönem mi istediği belirsiz; bu nedenle verilen bilgiler tam olarak soruya uyumlu değil ve güven düzeyi orta seviyede değerlendirildi.
+2025-12-13 16:52:44 - finsage - INFO - Qq2: Analysis complete - Confidence: 82%, Time: 153.80s
+2025-12-13 16:52:51 - finsage - INFO - Qq3: Doc agent response length: 576
+2025-12-13 16:52:57 - finsage - INFO - LLM Confidence: 48/100 (< 60) → TRIGGER web scraper | Reason: Veri Agent, yıllara göre kWh değerleri sunmasına rağmen kaynakça eksik, sayfa numarası veya rapor adı belirtilmemiş ve sayısal ifadelerde tutarsızlıklar var (örn. ‘3,617 98 990 207 Gj’). Doküman Agent ise verilen belgelerde kWh cinsinden veri bulunmadığını belirtiyor. Bu çelişki ve yetersiz referanslar nedeniyle cevabın güvenilirliği orta‑düşük seviyede.
+2025-12-13 16:53:05 - finsage - INFO - Qq3: Analysis complete - Confidence: 92%, Time: 175.47s
+2025-12-13 16:53:22 - finsage - INFO - Qq6: Doc agent response length: 263
+2025-12-13 16:53:27 - finsage - INFO - LLM Confidence: 70/100 (>= 60) → SKIP web scraper | Reason: Veri ajanı, yıllara göre engelli çalışan sayısı ve toplam çalışan sayısını vererek oranları hesaplamış ve net yüzde değerleri sunmuş. Sayılar tutarlı görünüyor, ancak kaynak gösterimi (sayfa, tablo vs.) eksik ve hesaplamaların doğruluğu belgelerden doğrudan teyit edilemiyor. Bu yüzden orta‑yüksek bir güven seviyesi veriyorum.
+2025-12-13 16:53:38 - finsage - INFO - Qq6: Analysis complete - Confidence: 94%, Time: 184.29s
+2025-12-13 17:10:39 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 17:10:39 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 17:10:39 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 17:10:39 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 17:10:39 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 17:10:39 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 17:10:42 - finsage - INFO - Qq1: Data agent response length: 38
+2025-12-13 17:10:43 - finsage - INFO - Qq4: Data agent response length: 38
+2025-12-13 17:10:43 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 17:10:54 - finsage - INFO - Qq2: Data agent response length: 375
+2025-12-13 17:10:56 - finsage - INFO - Qq4: Doc agent response length: 508
+2025-12-13 17:10:58 - finsage - INFO - Qq1: Doc agent response length: 1051
+2025-12-13 17:11:02 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Document Agent cevapta soruya net ve doğrudan evet yanıtı veriliyor, atık ayrıştırma yöntemleri detaylandırılıyor ve güvenilir bir kaynak (akbank-2023-entegre-faaliyet-raporu.pdf, Sayfa 130) belirtiliyor. Veri Agent’ın “tablolarda bilgi yok” ifadesi çelişki değil ek bir veri eksikliğini gösterir, bu da Document Agent yanıtının güvenilirliğini azaltmaz. Bu nedenle yüksek güven skoruna uygundur.
+2025-12-13 17:11:04 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Cevap soruya doğrudan “evet” diyor ve Akbank 2023 Entegre Faaliyet Raporu'ndan sayfa numaralarıyla desteklenen iki politika (İnsan Hakları ve Çocuk İşçi Çalıştırılmasını Önleme) sunuyor. Kaynak açık, detaylı ve ilgili konuyu kapsıyor; veri ajanının “tablolarda yok” demesi çelişki yaratmıyor, sadece tablo verisiyle ilgili. Bu yüzden yüksek güven (90‑100) aralığında ama %100’tan biraz düşük (kaynak doğrulanmadığı varsayımı) bir puan verildi.
+2025-12-13 17:11:07 - finsage - INFO - Qq3: Data agent response length: 808
+2025-12-13 17:11:09 - finsage - INFO - Qq4: Analysis complete - Confidence: 100%, Time: 30.71s
+2025-12-13 17:11:09 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 17:11:11 - finsage - INFO - Qq2: Doc agent response length: 137
+2025-12-13 17:11:13 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 34.52s
+2025-12-13 17:11:26 - finsage - INFO - LLM Confidence: 78/100 (>= 60) → SKIP web scraper | Reason: Document Agent cevabı 2023 yılına ait net bir değer (11 932 tCO₂e) sayfa numarasıyla destekleniyor, bu da soruya doğrudan ve güvenilir bir yanıt veriyor. Veri Agent ise yıllık değerleri tablo halinde sunarak 2019‑2023 toplamını (69 108 tCO₂e) veriyor; soruda yıllık dağılım istenmediği ve “toplam” ifadesi tek yıl için de yorumlanabilir olduğu için bu yanıt kısmen alakasızdır. Kaynak belirtilmiş ancak sayfa referansı eksik. Bu nedenle cevapların genel güvenliği orta‑yüksek seviyededir.
+2025-12-13 17:11:31 - finsage - INFO - Qq5: Doc agent response length: 480
+2025-12-13 17:11:36 - finsage - INFO - Qq6: Data agent response length: 500
+2025-12-13 17:11:36 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Soruyu doğrudan ve eksiksiz cevaplıyor, ayrıştırılan malzemelerin tam listesi veriliyor ve güvenilir bir kaynak (akbank-2023 entegre faaliyet raporu, Sayfa 130) belirtilmiş. Kaynak detaylı ve alakasız bilgi yok.
+2025-12-13 17:11:37 - finsage - INFO - Qq2: Analysis complete - Confidence: 95%, Time: 58.52s
+2025-12-13 17:11:46 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 67.12s
+2025-12-13 17:13:14 - finsage - INFO - Qq6: Doc agent response length: 24
+2025-12-13 17:13:19 - finsage - INFO - LLM Confidence: 78/100 (>= 60) → SKIP web scraper | Reason: Veri ajanı soruya doğrudan yanıt veriyor, toplam çalışan ve engelli çalışan sayılarıyla yüzde hesaplamasını sunuyor. Ancak kaynak sadece "Veri tablolarında bu bilgiler bulunmuştur" şeklinde belirtilmiş, sayfa numarası veya rapor adı gibi kesin bir referans yok. Bu belirsizlik nedeniyle yüksek güven (90+) yerine orta‑yüksek bir güven skoru veriyorum.
+2025-12-13 17:13:24 - finsage - INFO - Qq6: Analysis complete - Confidence: 95%, Time: 134.89s
+2025-12-13 17:13:40 - finsage - INFO - Qq3: Doc agent response length: 435
+2025-12-13 17:13:47 - finsage - INFO - LLM Confidence: 55/100 (< 60) → TRIGGER web scraper | Reason: İki cevap da birimler ve yıllar açısından soruya yanıt veriyor, ancak içeriklerde tutarsızlık var. 'Document Agent' kesin bir kWh değeri (1 546 776 kWh) ve sayfa numarası veriyor, ancak başlık yalnızca LED armatürlerin tüketimini gösteriyor, bu da toplam elektrik tüketimini kapsamayabilir. 'Veri Agent' ise yıllara göre çok daha yüksek tüketim değerleri (≈100 M kWh) sunuyor, ancak kaynağı belirtilmemiş ve değerlerin 'sahip olunan ve kiralanan yerler'le ne kadar ilişkili olduğu net değil. Bu belirsizlikler ve çelişkiler nedeniyle orta düzeyde bir güven skoru verildi.
+2025-12-13 17:13:47 - finsage - INFO - Qq3: Web scraper suggested but no URLs available, skipping
+2025-12-13 17:13:57 - finsage - INFO - Qq3: Analysis complete - Confidence: 78%, Time: 198.31s

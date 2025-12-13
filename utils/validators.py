@@ -1,52 +1,133 @@
 from typing import Dict, Any, List
 from core.logger import logger
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+from core.config import llm_reasoning
 
 
-def should_use_web_scraper(doc_res: str, data_res: str) -> bool:
+def should_use_web_scraper(doc_res: str, data_res: str, question: str = "") -> bool:
     """
-    Determine if web scraping is needed based on agent responses.
+    LLM-based confidence evaluation: Should we search the web?
     
-    More robust than checking just for "bulunamadı" - checks multiple
-    keywords and response lengths from both data and document agents.
+    Asks LLM to rate confidence (0-100) in current answers.
+    If confidence is low, triggers web search.
     
     Args:
         doc_res: Response from document agent
         data_res: Response from data agent
+        question: The original question (for context)
     
     Returns:
         True if web scraper should be used, False otherwise
     """
-    # Keywords indicating no information found
-    no_info_keywords = [
-        "bulunamadı", 
-        "bilgi yok", 
-        "mevcut değil",
-        "bulunmamaktadır", 
-        "tespit edilemedi",
-        "bilgi bulunamadı",
-        "veri yok",
-        "dokümanlarda yok"
-    ]
+    # Hızlı kontrol: Eğer her iki agent da çok kısa cevap verdiyse
+    if len(doc_res) < 20 and len(data_res) < 15:
+        logger.info("Both agents returned very short responses - triggering web scraper")
+        return True
     
-    # Check document response
-    doc_has_info = (
-        len(doc_res) > 50 and 
-        not any(kw in doc_res.lower() for kw in no_info_keywords)
-    )
+    # Confidence threshold - bu değerin altındaysa web'e git
+    CONFIDENCE_THRESHOLD = 60
     
-    # Check data response
-    data_has_info = (
-        len(data_res) > 20 and 
-        not any(kw in data_res.lower() for kw in no_info_keywords)
-    )
+    # LLM Confidence Evaluator Prompt
+    prompt = ChatPromptTemplate.from_template("""
+    Sen bir cevap kalite değerlendiricisisin. Görevin: Verilen soruya mevcut cevapların ne kadar güvenilir olduğunu değerlendirmek.
     
-    # Use web scraper if BOTH sources are insufficient
-    should_scrape = not (doc_has_info or data_has_info)
+    SORU:
+    {question}
     
-    if should_scrape:
-        logger.info(f"Web scraper triggered - Doc length: {len(doc_res)}, Data length: {len(data_res)}")
+    MEVCUT CEVAPLAR:
     
-    return should_scrape
+    [DOKÜMAN AGENT]:
+    {doc_response}
+    
+    [VERİ AGENT]:
+    {data_response}
+    
+    GÖREVİN:
+    Yukarıdaki cevaplara 0-100 arası bir GÜVEN SKORU ver.
+    
+    GÜVEN SKORU KILAVUZU:
+    
+    90-100: ✅ YÜKSEK GÜVEN
+    - Soruya tam, doğrudan ve net cevap var
+    - Kaynak güvenilir (sayfa numarası, tablo referansı vs)
+    - Yıl, birim, sayılar soruyla tam eşleşiyor
+    - Çelişki yok
+    
+    60-89: ⚠️ ORTA GÜVEN
+    - Cevap var ama tam değil veya kısmi
+    - Kaynak referansı eksik
+    - Yıl veya birim tam eşleşmiyor
+    - Hafif belirsizlik var
+    
+    30-59: ⚠️ DÜŞÜK GÜVEN
+    - Cevap çok genel veya alakalı ama spesifik değil
+    - Kaynak zayıf
+    - Eksik bilgi var
+    - Belirsizlik yüksek
+    
+    0-29: ❌ ÇOK DÜŞÜK GÜVEN
+    - Soruyla alakasız bilgi
+    - Hiç cevap yok
+    - Tamamen belirsiz
+    
+    CEVAP FORMATI (JSON):
+    {{
+        "confidence_score": 0-100 arası sayı,
+        "reason": "Kısa açıklama (Türkçe, neden bu skoru verdin?)"
+    }}
+    
+    ÖRNEKLER:
+    
+    Örnek 1:
+    Soru: "2023 elektrik tüketimi nedir?"
+    Doküman: "2023 yılı için toplam 24,000 kWh elektrik tüketimi rapor edilmiştir. (Kaynak: Sürdürülebilirlik Raporu, Sayfa 34)"
+    Skor: {{"confidence_score": 95, "reason": "Tam cevap, kaynak güvenilir, yıl ve birim eşleşiyor"}}
+    
+    Örnek 2:
+    Soru: "2023 Kapsam 3 emisyonları nedir?"
+    Doküman: "Kapsam 3 emisyonlardan bahsediliyor ancak 2023 için spesifik değer belirtilmemiş. 2022 yılı için 5,200 ton."
+    Skor: {{"confidence_score": 35, "reason": "İlgili bilgi var ama istenilen yıl için veri yok"}}
+    
+    Örnek 3:
+    Soru: "Şirketin çevre politikası var mı?"
+    Doküman: "Sürdürülebilirlik bölümünde genel çevre taahhütlerinden bahsediliyor ancak resmi bir politika belgesi tespit edilemedi."
+    Skor: {{"confidence_score": 45, "reason": "Kısmi bilgi var ama net cevap yok, belirsiz"}}
+    """)
+    
+    try:
+        parser = JsonOutputParser()
+        chain = prompt | llm_reasoning | parser
+        
+        result = chain.invoke({
+            "question": question or "Bilinmeyen soru",
+            "doc_response": doc_res[:2000],  # İlk 2000 karakter
+            "data_response": data_res[:2000]
+        })
+        
+        confidence = result.get("confidence_score", 0)
+        reason = result.get("reason", "No reason provided")
+        
+        # Web'e gitme kararı: Confidence threshold'dan düşükse
+        needs_web = confidence < CONFIDENCE_THRESHOLD
+        
+        if needs_web:
+            logger.info(
+                f"LLM Confidence: {confidence}/100 (< {CONFIDENCE_THRESHOLD}) → "
+                f"TRIGGER web scraper | Reason: {reason}"
+            )
+        else:
+            logger.info(
+                f"LLM Confidence: {confidence}/100 (>= {CONFIDENCE_THRESHOLD}) → "
+                f"SKIP web scraper | Reason: {reason}"
+            )
+        
+        return needs_web
+        
+    except Exception as e:
+        # LLM evaluation başarısızsa, güvenli tarafta kal (web'e gitme)
+        logger.error(f"Web trigger confidence evaluation error: {e}")
+        return False
 
 
 def validate_ai_response(question_obj: Dict[str, Any], ai_result: Dict[str, Any]) -> Dict[str, Any]:

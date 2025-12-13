@@ -186,10 +186,12 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
 
     # 3. Web Scraper (Smart Trigger)
     web_res = None
-    if should_use_web_scraper(doc_res, d_res):
-        if manual_urls:
+    if should_use_web_scraper(doc_res, d_res, question=q_txt):  # LLM karar verir
+        if not manual_urls:
+            logger.info(f"Q{q_id}: Web scraper suggested but no URLs available, skipping")
+        else:
             try:
-                logger.info(f"Q{q_id}: Triggering web scraper")
+                logger.info(f"Q{q_id}: Triggering web scraper with {len(manual_urls)} URLs")
                 scraper = get_web_scraper_agent()
                 web_res = scraper(q_txt, manual_urls=manual_urls, use_crawl=use_crawl, 
                                 max_depth=crawl_depth, limit=crawl_limit)
@@ -197,6 +199,8 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
             except Exception as e:
                 logger.error(f"Q{q_id}: Web scraper error: {e}")
                 web_res = None
+    else:
+        logger.debug(f"Q{q_id}: Web scraper not needed (sufficient info from doc/data)")
 
     # 4. AI Reasoning with Math Tool Support
     parser = JsonOutputParser()
@@ -232,7 +236,7 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
       "evidence": {{
         "answer": "Nihai cevap değeri. Örnek: '24,000 kWh' veya 'Evet, politika mevcut'",
         "proof": "DETAYLI TÜRKÇE AÇIKLAMA: Cevabın nasıl bulunduğunu, hesaplama varsa adım adım göster, hangi verilerin kullanıldığını açıkla. Minimum 2-3 cümle. Örnek: 'Sürdürülebilirlik Raporu'nda 2023 yılı için 24 MWh enerji tüketimi belirtilmiştir. Sorunun istediği birim kWh olduğu için dönüşüm yapıldı: 24 MWh × 1000 = 24,000 kWh. Bu değer şirketin toplam elektrik tüketimini göstermektedir.'",
-        "reference": "Kaynak bilgisi: Dosya adı, Sayfa numarası, Tablo/Bölüm adı. ÖNEMLİ: Doküman ajanından gelen bilgilerde [Sayfa X] veya (Sayfa X) formatında sayfa numarası varsa MUTLAKA kullan ve referansa ekle. Örnek: 'Kaynak: Sürdürülebilirlik Raporu 2023, Sayfa 34, Enerji Tüketimi Tablosu'"
+        "reference": "DOSYA ADI ZORUNLU! Format: 'Kaynak: [DOSYA ADI], Sayfa [X], [Tablo/Bölüm]'. Önce mutlaka dosya adını belirt (örn: 'Sürdürülebilirlik Raporu 2023.pdf' veya 'Veri.xlsx'), sonra sayfa/tablo. Sadece 'Excel' veya 'Tablo' yazmak YANLIŞ - dosya adı gerekli. Örnek: 'Kaynak: Akbank_2023_Rapor.pdf, Sayfa 34, Enerji Tablosu'"
       }}
     }}
     
@@ -242,14 +246,14 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
     {{
       "answer": "11,932,000 kg",
       "proof": "Kapsam 1 Emisyonlar tablosunda 2023 yılı için 11.932 tCO2e değeri bulunmaktadır. Sorunun istediği birim kg olduğu için dönüşüm yapıldı: 11.932 ton × 1000 = 11,932 kg. Bu değer doğrudan operasyonel faaliyetlerden kaynaklanan sera gazı emisyonlarını temsil etmektedir.",
-      "reference": "Kaynak: Sürdürülebilirlik Raporu 2023, Sayfa 45, Kapsam 1 Emisyonlar Tablosu"
+      "reference": "Kaynak: Sürdürülebilirlik_Raporu_2023.pdf, Sayfa 45, Kapsam 1 Emisyonlar Tablosu"
     }}
     
     Örnek 2 - Seçenekli Soru:
     {{
       "answer": "Evet",
       "proof": "Şirketin 2023 Sürdürülebilirlik Raporu'nun 'Çevre Politikaları' bölümünde detaylı bir çevre yönetim politikası açıklanmıştır. Politika, emisyon azaltma hedeflerini, enerji verimliliği önlemlerini ve atık yönetimi stratejilerini içermektedir.",
-      "reference": "Kaynak: Sürdürülebilirlik Raporu 2023, Sayfa 12-15, Çevre Politikaları Bölümü"
+      "reference": "Kaynak: Akbank_Entegre_Rapor_2023.pdf, Sayfa 12-15, Çevre Politikaları Bölümü"
     }}
     
     ÖNEMLİ: 
@@ -298,7 +302,7 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
 # --- INITIALIZATION ---
 if "messages" not in st.session_state: st.session_state.messages = []
 if "target_urls" not in st.session_state: 
-    st.session_state.target_urls = ["https://www.akbankinvestorrelations.com/tr/"]
+    st.session_state.target_urls = []  # Boş başlat - kullanıcı manuel ekleyecek
 if "form_data" not in st.session_state: st.session_state.form_data = {} # To store filled values
 if "form_questions" not in st.session_state: st.session_state.form_questions = []
 # Crawl settings

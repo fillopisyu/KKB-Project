@@ -65,7 +65,14 @@ def get_doc_agent():
         persist_directory=VECTOR_DB_PATH,
         embedding_function=embedding_model
     )
-    retriever = vector_db.as_retriever(search_kwargs={"k": 5})
+    retriever = vector_db.as_retriever(
+        search_type="mmr",  # Maximum Marginal Relevance - daha deterministik
+        search_kwargs={
+            "k": 5,
+            "fetch_k": 50,  # 50 chunk'tan en iyi/diverse 5'ini seç (daha stabil)
+            "lambda_mult": 0.5  # 0.5 = similarity ve diversity dengesi
+        }
+    )
 
     # 3. Tool Hazırlığı
     retriever_tool = create_retriever_tool_manual(

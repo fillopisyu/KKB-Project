@@ -138,6 +138,10 @@ def get_web_scraper_agent():
     1. **SADECE BU İÇERİK:** Asla kendi genel bilgini kullanma. Cevap metinde yoksa "Bu sayfada bilgi yok" de.
     2. **KANIT GÖSTER:** Cevabı bulursan, metinden alıntı yap ve sonuna "(Kaynak: [Web Sitesi])" ekle.
     3. **ÖZETLE:** Cevabı gereksiz detaylardan arındırarak net bir şekilde ver.
+    4. **BİRİM DÖNÜŞÜMLERİ:** Eğer soru belirli bir birimde cevap istiyorsa, metinde farklı birimlerde veri varsa dönüştür:
+       - Enerji: 1 MWh = 1,000 kWh | 1 GWh = 1,000,000 kWh
+       - Emisyon: 1 ton = 1,000 kg | 1 kton = 1,000 ton
+       - Su: 1 m³ = 1,000 litre
     """)
 
     chain = prompt | llm_reasoning | StrOutputParser()
