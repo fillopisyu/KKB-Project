@@ -8,9 +8,19 @@ from langchain_community.document_loaders import (
     UnstructuredExcelLoader,
     UnstructuredWordDocumentLoader,
     UnstructuredPowerPointLoader,
-    TextLoader,
-    UnstructuredFileLoader  # Joker Yükleyici
+    TextLoader
 )
+
+# Try to import the new UnstructuredLoader, fallback to old one if not available
+try:
+    from langchain_unstructured import UnstructuredLoader
+    USE_NEW_UNSTRUCTURED = True
+except ImportError:
+    from langchain_community.document_loaders import UnstructuredFileLoader
+    USE_NEW_UNSTRUCTURED = False
+    import warnings
+    warnings.filterwarnings('ignore', category=DeprecationWarning, module='langchain_community')
+
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
@@ -67,7 +77,10 @@ def get_file_snippet(file_path: str) -> str:
 
         # Diğer tüm formatlar için UnstructuredLoader (Joker)
         else:
-            loader = UnstructuredFileLoader(file_path)
+            if USE_NEW_UNSTRUCTURED:
+                loader = UnstructuredLoader(file_path)
+            else:
+                loader = UnstructuredFileLoader(file_path)
             docs = loader.load()
             if docs:
                 # İlk 1000 karakteri al
@@ -167,7 +180,10 @@ def process_vector(file_path, file_name, ext):
         # Bilinmeyen Formatlar (Joker)
         else:
             print(f"   ⚠️ Bilinmeyen format ({ext}), 'Unstructured' ile deneniyor...")
-            loader = UnstructuredFileLoader(file_path)
+            if USE_NEW_UNSTRUCTURED:
+                loader = UnstructuredLoader(file_path)
+            else:
+                loader = UnstructuredFileLoader(file_path)
 
         raw_docs = loader.load()
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)

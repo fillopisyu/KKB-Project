@@ -14,7 +14,19 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
 from dotenv import load_dotenv
 
+# Fix for ThreadPoolExecutor context warnings
+try:
+    from streamlit.runtime.scriptrunner import add_script_run_ctx, get_script_run_ctx
+except ImportError:
+    # Fallback for older Streamlit versions
+    add_script_run_ctx = None
+    get_script_run_ctx = None
+
 load_dotenv()
+
+# Suppress harmless ScriptRunContext warnings from ThreadPoolExecutor
+import logging
+logging.getLogger("streamlit.runtime.scriptrunner.script_runner").setLevel(logging.ERROR)
 
 # --- PAGE CONFIG ---
 st.set_page_config(
@@ -113,7 +125,20 @@ def synthesize_strict_answer(question, data_result, doc_result, web_result=None)
     chain = prompt | llm_reasoning | StrOutputParser()
     return chain.invoke({"question": question, "data_output": data_result, "doc_output": doc_result, "web_context": web_context})
 
-def solve_question_autofill(question_obj, manual_urls=None):
+def solve_question_autofill_wrapper(ctx, question_obj, manual_urls, use_crawl, crawl_depth, crawl_limit):
+    """
+    Wrapper function that adds Streamlit context to worker threads.
+    This prevents the 'missing ScriptRunContext' warning.
+    """
+    if ctx and add_script_run_ctx:
+        add_script_run_ctx(ctx=ctx)
+    
+    return solve_question_autofill(question_obj, manual_urls, use_crawl, crawl_depth, crawl_limit)
+
+def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, crawl_depth=2, crawl_limit=10):
+    """Analyze a question and return suggested answer with timing information."""
+    start_time = time.time()
+    
     q_txt = question_obj.get("questionDescription", "")
     q_type = question_obj.get("questionType", "")
     q_opts = question_obj.get("answers", [])
@@ -138,8 +163,12 @@ def solve_question_autofill(question_obj, manual_urls=None):
         if manual_urls:
             try:
                 scraper = get_web_scraper_agent()
-                web_res = scraper(q_txt, manual_urls=manual_urls)
+                # Use crawl settings from UI
+                web_res = scraper(q_txt, manual_urls=manual_urls, use_crawl=use_crawl, max_depth=crawl_depth, limit=crawl_limit)
             except: pass
+
+
+
 
     # 2. AI Reasoning
     parser = JsonOutputParser()
@@ -170,12 +199,25 @@ def solve_question_autofill(question_obj, manual_urls=None):
     
     try:
         chain = prompt | llm_reasoning | parser
-        return chain.invoke({
+        result = chain.invoke({
             "q_txt": q_txt, "q_type": q_type, "q_opts": q_opts,
             "d_res": d_res, "doc_res": doc_res, "web_res": web_res
         })
-    except:
-        return {"suggested_value": "", "selected_id": None, "confidence_score": 0, "evidence_summary": "Analiz hatası"}
+        
+        # Add elapsed time
+        elapsed_time = time.time() - start_time
+        result["elapsed_time"] = elapsed_time
+        
+        return result
+    except Exception as e:
+        elapsed_time = time.time() - start_time
+        return {
+            "suggested_value": "", 
+            "selected_id": None, 
+            "confidence_score": 0, 
+            "evidence_summary": f"Analiz hatası: {str(e)}", 
+            "elapsed_time": elapsed_time
+        }
 
 # --- INITIALIZATION ---
 if "messages" not in st.session_state: st.session_state.messages = []
@@ -183,6 +225,10 @@ if "target_urls" not in st.session_state:
     st.session_state.target_urls = ["https://www.akbankinvestorrelations.com/tr/"]
 if "form_data" not in st.session_state: st.session_state.form_data = {} # To store filled values
 if "form_questions" not in st.session_state: st.session_state.form_questions = []
+# Crawl settings
+if "use_crawl" not in st.session_state: st.session_state.use_crawl = True
+if "crawl_depth" not in st.session_state: st.session_state.crawl_depth = 2
+if "crawl_limit" not in st.session_state: st.session_state.crawl_limit = 10
 
 # --- SIDEBAR ---
 with st.sidebar:
@@ -210,11 +256,34 @@ with st.sidebar:
                 s.update(label="Hazır", state="complete")
     
     st.markdown("---")
-    with st.expander("🌐 Web URL Ekle (Opsiyonel)"):
-        u = st.text_input("URL")
+    with st.expander("🌐 Web Tarama Ayarları"):
+        u = st.text_input("URL Ekle")
         if st.button("Ekle"): 
             st.session_state.target_urls.append(u)
             st.success("Eklendi")
+        
+        st.markdown("**Tarama Modu:**")
+        st.session_state.use_crawl = st.checkbox(
+            "🕷️ Alt sayfaları da tara (Crawl Mode)",
+            value=st.session_state.use_crawl,
+            help="Aktif olduğunda, ana URL'deki tüm bağlantıları takip ederek alt sayfaları da tarar."
+        )
+        
+        if st.session_state.use_crawl:
+            st.session_state.crawl_depth = st.slider(
+                "Tarama Derinliği",
+                min_value=1,
+                max_value=5,
+                value=st.session_state.crawl_depth,
+                help="Kaç seviye link takip edilecek (1 = sadece ana sayfadaki linkler)"
+            )
+            st.session_state.crawl_limit = st.slider(
+                "Maksimum Sayfa Sayısı",
+                min_value=5,
+                max_value=50,
+                value=st.session_state.crawl_limit,
+                help="Taranacak maksimum sayfa sayısı"
+            )
 
 # --- MAIN ---
 st.markdown("""
@@ -249,12 +318,25 @@ with tab1:
             total_questions = len(st.session_state.form_questions)
             completed_count = 0
             
+            # Get current Streamlit context to pass to threads
+            ctx = get_script_run_ctx() if get_script_run_ctx else None
+            
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                # Submit all tasks
+                # Submit all tasks with context
                 future_to_qid = {
-                    executor.submit(solve_question_autofill, q, st.session_state.target_urls): q["questionId"] 
+                    executor.submit(
+                        solve_question_autofill_wrapper,
+                        ctx,  # Pass context to wrapper
+                        q, 
+                        st.session_state.target_urls,
+                        st.session_state.use_crawl,
+                        st.session_state.crawl_depth,
+                        st.session_state.crawl_limit
+                    ): q["questionId"] 
                     for q in st.session_state.form_questions
                 }
+
+
                 
                 # Process as they complete
                 for future in concurrent.futures.as_completed(future_to_qid):
@@ -267,7 +349,8 @@ with tab1:
                             "selected_id": ai_res.get("selected_id"),
                             "selected_ids": ai_res.get("selected_ids", []),
                             "confidence": ai_res.get("confidence_score"),
-                            "evidence": ai_res.get("evidence_summary")
+                            "evidence": ai_res.get("evidence_summary"),
+                            "elapsed_time": ai_res.get("elapsed_time", 0)
                         }
                     except Exception as e:
                         print(f"Error processing question {qid}: {e}")
@@ -276,7 +359,32 @@ with tab1:
                     prog_bar.progress(completed_count / total_questions, f"Analiz ediliyor... ({completed_count}/{total_questions})")
             
             prog_bar.empty()
-            st.success("Analiz Tamamlandı! Lütfen cevapları kontrol ediniz.")
+            
+            # Calculate timing statistics
+            all_times = [data.get("elapsed_time", 0) for data in st.session_state.form_data.values()]
+            if all_times:
+                total_time = sum(all_times)
+                avg_time = total_time / len(all_times)
+                max_time = max(all_times)
+                min_time = min(all_times)
+                
+                # Format times
+                total_str = f"{total_time:.1f}s" if total_time < 60 else f"{int(total_time//60)}m {int(total_time%60)}s"
+                avg_str = f"{avg_time:.1f}s"
+                max_str = f"{max_time:.1f}s"
+                min_str = f"{min_time:.1f}s"
+                
+                st.success(f"""
+                ✅ **Analiz Tamamlandı!**
+                
+                📊 **Performans İstatistikleri:**
+                - Toplam Süre: {total_str}
+                - Ortalama: {avg_str}/soru
+                - En Hızlı: {min_str} | En Yavaş: {max_str}
+                """)
+            else:
+                st.success("Analiz Tamamlandı! Lütfen cevapları kontrol ediniz.")
+
 
     # FORM RENDER (Google Forms Style)
     if st.session_state.form_questions:
@@ -303,12 +411,42 @@ with tab1:
                     opt_labels = [o["answerDescription"] for o in options]
                     opt_ids = [o["answerId"] for o in options]
                     
-                    # Index bul
+                    # Index bul - Güvenli validasyon
                     idx = 0
-                    if sel_id and sel_id in opt_ids:
-                        idx = opt_ids.index(sel_id)
-                    elif current_val: # sometimes AI returns text instead of ID
-                         pass 
+                    
+                    # Önce selected_id ile eşleştirmeyi dene
+                    if sel_id is not None:
+                        try:
+                            # sel_id'nin opt_ids listesinde olup olmadığını kontrol et
+                            if sel_id in opt_ids:
+                                idx = opt_ids.index(sel_id)
+                            else:
+                                # sel_id bulunamadıysa, metin eşleştirmesi dene
+                                if current_val:
+                                    current_val_lower = str(current_val).lower().strip()
+                                    for i, label in enumerate(opt_labels):
+                                        if label.lower().strip() == current_val_lower:
+                                            idx = i
+                                            break
+                        except (ValueError, IndexError, TypeError) as e:
+                            print(f"Warning: Error matching option for question {qid}: {e}")
+                            idx = 0
+                    # Eğer sel_id yoksa ama current_val varsa, sadece metin eşleştirmesi yap
+                    elif current_val:
+                        try:
+                            current_val_lower = str(current_val).lower().strip()
+                            for i, label in enumerate(opt_labels):
+                                if label.lower().strip() == current_val_lower:
+                                    idx = i
+                                    break
+                        except (TypeError, AttributeError) as e:
+                            print(f"Warning: Error matching text for question {qid}: {e}")
+                            idx = 0
+                    
+                    # Son güvenlik kontrolü: Index sınırlarını kontrol et
+                    if not (0 <= idx < len(opt_labels)):
+                        print(f"Warning: Invalid index {idx} for question {qid} with {len(opt_labels)} options. Resetting to 0.")
+                        idx = 0
                     
                     st.radio("Cevabınız:", opt_labels, index=idx, key=f"wdg_{qid}")
                 
@@ -317,14 +455,22 @@ with tab1:
                     opt_labels = [o["answerDescription"] for o in options]
                     opt_ids = [o["answerId"] for o in options]
                     
-                    # Get AI-selected IDs and find matching labels
+                    # Get AI-selected IDs and find matching labels - Güvenli validasyon
                     sel_ids = ai_data.get("selected_ids", [])
                     default_selections = []
-                    if sel_ids:
+                    
+                    if sel_ids and isinstance(sel_ids, list):
                         for sel_id in sel_ids:
-                            if sel_id in opt_ids:
-                                idx = opt_ids.index(sel_id)
-                                default_selections.append(opt_labels[idx])
+                            try:
+                                if sel_id in opt_ids:
+                                    idx = opt_ids.index(sel_id)
+                                    # Index sınırlarını kontrol et
+                                    if 0 <= idx < len(opt_labels):
+                                        default_selections.append(opt_labels[idx])
+                            except (ValueError, IndexError) as e:
+                                # Geçersiz ID'leri atla
+                                print(f"Warning: Invalid option ID {sel_id} for question {qid}: {e}")
+                                continue
                     
                     st.multiselect("Seçimleriniz:", opt_labels, default=default_selections, key=f"wdg_{qid}")
                 
@@ -333,13 +479,17 @@ with tab1:
                 
                 # AI KANIT KUTUSU
                 if evidence:
+                    elapsed = ai_data.get("elapsed_time", 0)
+                    elapsed_str = f"{elapsed:.1f}s" if elapsed < 60 else f"{int(elapsed//60)}m {int(elapsed%60)}s"
+                    
                     color = "#4ade80" if int(confidence or 0) > 70 else "#f87171"
                     st.markdown(f"""
                     <div class="evidence-box" style="border-left: 3px solid {color};">
-                        <strong>🤖 AI Önerisi ({confidence}% Güven):</strong><br>
+                        <strong>🤖 AI Önerisi ({confidence}% Güven) • ⏱️ {elapsed_str}</strong><br>
                         {evidence}
                     </div>
                     """, unsafe_allow_html=True)
+
 
                 st.markdown('</div>', unsafe_allow_html=True)
             

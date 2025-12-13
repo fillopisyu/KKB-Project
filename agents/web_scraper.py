@@ -21,10 +21,19 @@ except ImportError:
         FirecrawlApp = None
 
 
-def scrape_with_firecrawl(url):
+def scrape_with_firecrawl(url, use_crawl=False, max_depth=2, limit=10):
     """
     Firecrawl API kullanarak verilen URL'i Markdown formatında çeker.
-    Versiyon uyumsuzluklarına karşı dirençlidir.
+    
+    Args:
+        url: Hedef URL
+        use_crawl: True ise tüm alt sayfaları da tarar (crawl), False ise sadece tek sayfa (scrape)
+        max_depth: Crawl derinliği (kaç seviye link takip edilecek)
+        limit: Maksimum taranacak sayfa sayısı
+    
+    Returns:
+        Tek sayfa için: Markdown string
+        Crawl için: Dict with {'pages': [{'url': ..., 'markdown': ...}, ...]}
     """
     api_key = os.getenv("FIRECRAWL_API_KEY")
 
@@ -34,38 +43,74 @@ def scrape_with_firecrawl(url):
     if not FirecrawlApp:
         return "HATA: 'firecrawl-py' kütüphanesi eksik. Lütfen 'pip install firecrawl-py' çalıştırın."
 
-    print(f"🔥 Firecrawl Bağlanıyor: {url}...")
-
     try:
         app = FirecrawlApp(api_key=api_key)
 
-        # --- VERSİYON KONTROLÜ VE METOT SEÇİMİ ---
-        params = {'formats': ['markdown']}
+        # --- CRAWL MODE (Alt sayfaları da tara) ---
+        if use_crawl:
+            print(f"🕷️ Firecrawl CRAWLING: {url} (Derinlik: {max_depth}, Limit: {limit})...")
+            
+            crawl_params = {
+                'limit': limit,
+                'scrapeOptions': {'formats': ['markdown']},
+                'maxDepth': max_depth
+            }
+            
+            # Crawl metodu kontrolü
+            if hasattr(app, 'crawl_url'):
+                crawl_result = app.crawl_url(url, params=crawl_params)
+            elif hasattr(app, 'crawl'):
+                crawl_result = app.crawl(url, params=crawl_params)
+            else:
+                return "HATA: Firecrawl kütüphanesi 'crawl_url' metodunu desteklemiyor. Lütfen güncelleyin."
+            
+            # Sonuçları işle
+            if isinstance(crawl_result, dict):
+                pages = crawl_result.get('data', [])
+                if not pages:
+                    return "UYARI: Crawl sonucu boş döndü."
+                
+                # Her sayfanın markdown içeriğini çıkar
+                processed_pages = []
+                for page in pages:
+                    page_url = page.get('url', url)
+                    markdown = page.get('markdown', '')
+                    if markdown:
+                        processed_pages.append({
+                            'url': page_url,
+                            'markdown': markdown
+                        })
+                
+                print(f"   ✅ {len(processed_pages)} sayfa tarandı.")
+                return {'pages': processed_pages}
+            else:
+                return "HATA: Crawl sonucu beklenmeyen formatta."
 
-        if hasattr(app, 'scrape_url'):
-            # Standart v1.0+ yöntemi
-            scrape_result = app.scrape_url(url, params=params)
-        elif hasattr(app, 'scrape'):
-            # Alternatif / Eski yöntem
-            scrape_result = app.scrape(url, params=params)
+        # --- SCRAPE MODE (Sadece tek sayfa) ---
         else:
-            return "HATA: Firecrawl kütüphanesi yüklü ancak 'scrape_url' metodu bulunamadı. Lütfen 'pip install --upgrade firecrawl-py' yapın."
+            print(f"🔥 Firecrawl SCRAPING: {url}...")
+            
+            params = {'formats': ['markdown']}
 
-        # Sonucu Al
-        # Bazen cevap direkt dict gelir, bazen obje olabilir.
-        if isinstance(scrape_result, dict):
-            content = scrape_result.get('markdown', '')
-            # Eğer markdown yoksa data içindeki text'e bak
+            if hasattr(app, 'scrape_url'):
+                scrape_result = app.scrape_url(url, params=params)
+            elif hasattr(app, 'scrape'):
+                scrape_result = app.scrape(url, params=params)
+            else:
+                return "HATA: Firecrawl kütüphanesi yüklü ancak 'scrape_url' metodu bulunamadı."
+
+            # Sonucu Al
+            if isinstance(scrape_result, dict):
+                content = scrape_result.get('markdown', '')
+                if not content:
+                    content = scrape_result.get('data', {}).get('markdown', '')
+            else:
+                content = str(scrape_result)
+
             if not content:
-                content = scrape_result.get('data', {}).get('markdown', '')
-        else:
-            # Obje geldiyse
-            content = str(scrape_result)
+                return "UYARI: Web sayfası boş döndü veya erişim engellendi."
 
-        if not content:
-            return "UYARI: Web sayfası boş döndü veya erişim engellendi."
-
-        return content
+            return content
 
     except Exception as e:
         return f"Scraping Hatası ({url}): {str(e)}"
@@ -97,13 +142,24 @@ def get_web_scraper_agent():
 
     chain = prompt | llm_reasoning | StrOutputParser()
 
-    def run_scraper(question, manual_urls=None):
+    def run_scraper(question, manual_urls=None, use_crawl=True, max_depth=2, limit=10):
+        """
+        Web scraper agent'ı çalıştırır.
+        
+        Args:
+            question: Sorulacak soru
+            manual_urls: Manuel URL listesi (opsiyonel)
+            use_crawl: True ise alt sayfaları da tarar, False ise sadece ana sayfa
+            max_depth: Crawl derinliği
+            limit: Maksimum taranacak sayfa sayısı
+        """
         target_urls = manual_urls if manual_urls else URL_STORE
 
         if not target_urls:
             return "❌ HATA: Taranacak URL bulunamadı. Lütfen 'data/inputs/urls.txt' dosyasına link ekleyin."
 
-        print(f"🌍 Web Kazıyıcı Çalışıyor... Hedef: {len(target_urls)} adres")
+        mode_text = "CRAWLING (Alt sayfalar dahil)" if use_crawl else "SCRAPING (Sadece ana sayfa)"
+        print(f"🌍 Web Kazıyıcı Çalışıyor... Mod: {mode_text}, Hedef: {len(target_urls)} adres")
         results = []
 
         for url in target_urls:
@@ -112,31 +168,67 @@ def get_web_scraper_agent():
 
             print(f"   ↳ Hedef Taranıyor: {url}")
 
-            # İçeriği Çek
-            content = scrape_with_firecrawl(url)
+            # İçeriği Çek (Crawl veya Scrape)
+            content = scrape_with_firecrawl(url, use_crawl=use_crawl, max_depth=max_depth, limit=limit)
 
-            # Hata varsa rapora ekle
-            if "Hata" in content or "UYARI" in content:
+            # Hata kontrolü
+            if isinstance(content, str) and ("HATA" in content or "UYARI" in content):
                 results.append(f"❌ {url}: {content}")
                 continue
 
-            # İçeriği Kırp
-            trimmed_content = content[:40000]
+            # --- CRAWL MODE: Birden fazla sayfa ---
+            if use_crawl and isinstance(content, dict) and 'pages' in content:
+                pages = content['pages']
+                print(f"      📄 {len(pages)} sayfa bulundu, analiz ediliyor...")
+                
+                page_results = []
+                for page in pages:
+                    page_url = page['url']
+                    page_content = page['markdown']
+                    
+                    # İçeriği kırp
+                    trimmed_content = page_content[:40000]
+                    
+                    # LLM Analizi
+                    try:
+                        answer = chain.invoke({
+                            "question": question,
+                            "web_content": trimmed_content
+                        })
 
-            # LLM Analizi
-            try:
-                answer = chain.invoke({
-                    "question": question,
-                    "web_content": trimmed_content
-                })
+                        if "bilgi yok" not in answer.lower() and "bulunmamaktadır" not in answer.lower():
+                            page_results.append(f"📄 {page_url}:\n{answer}")
+                        else:
+                            print(f"         ℹ️ {page_url} - Bilgi yok")
 
-                if "bilgi yok" not in answer.lower() and "bulunmamaktadır" not in answer.lower():
-                    results.append(f"✅ KAYNAK ({url}):\n{answer}")
+                    except Exception as e:
+                        page_results.append(f"Analiz Hatası ({page_url}): {e}")
+                
+                if page_results:
+                    results.append(f"✅ KAYNAK GRUBU ({url}):\n" + "\n\n".join(page_results))
                 else:
-                    print(f"      ℹ️ Bu sayfada bilgi çıkmadı.")
+                    print(f"      ℹ️ Hiçbir sayfada bilgi bulunamadı.")
 
-            except Exception as e:
-                results.append(f"Analiz Hatası ({url}): {e}")
+            # --- SCRAPE MODE: Tek sayfa ---
+            else:
+                if isinstance(content, str):
+                    # İçeriği Kırp
+                    trimmed_content = content[:40000]
+
+                    # LLM Analizi
+                    try:
+                        answer = chain.invoke({
+                            "question": question,
+                            "web_content": trimmed_content
+                        })
+
+                        if "bilgi yok" not in answer.lower() and "bulunmamaktadır" not in answer.lower():
+                            results.append(f"✅ KAYNAK ({url}):\n{answer}")
+                        else:
+                            print(f"      ℹ️ Bu sayfada bilgi çıkmadı.")
+
+                    except Exception as e:
+                        results.append(f"Analiz Hatası ({url}): {e}")
 
         if not results:
             return "Taranan web sayfalarında bu soruyla ilgili spesifik bir bilgi bulunamadı."
