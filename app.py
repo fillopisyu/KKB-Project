@@ -512,7 +512,12 @@ with tab1:
     # FORM RENDER (Google Forms Style)
     if st.session_state.form_questions:
         st.markdown("---")
-        with st.form("audit_form"):
+        
+        # Generate unique form key based on whether we have AI data
+        has_ai_data = len(st.session_state.form_data) > 0
+        form_suffix = "_filled" if has_ai_data else "_empty"
+        
+        with st.form(f"audit_form{form_suffix}"):
             for q in st.session_state.form_questions:
                 qid = q["questionId"]
                 label = f"{qid}. {q['questionDescription']}"
@@ -529,7 +534,9 @@ with tab1:
                 st.markdown(f'<div class="question-card">', unsafe_allow_html=True)
                 st.markdown(f"**{label}**")
                 
-                # WIDGET SEÇİMİ
+                # WIDGET SEÇİMİ - Unique key with suffix
+                widget_key = f"wdg_{qid}{form_suffix}"
+                
                 if qtype == "singleChoice":
                     options = q.get("answers", [])
                     opt_labels = [o["answerDescription"] for o in options]
@@ -572,7 +579,7 @@ with tab1:
                         print(f"Warning: Invalid index {idx} for question {qid} with {len(opt_labels)} options. Resetting to 0.")
                         idx = 0
                     
-                    st.radio("Cevabınız:", opt_labels, index=idx, key=f"wdg_{qid}")
+                    st.radio("Cevabınız:", opt_labels, index=idx, key=widget_key)
                 
                 elif qtype == "multiChoice":
                     options = q.get("answers", [])
@@ -596,13 +603,13 @@ with tab1:
                                 print(f"Warning: Invalid option ID {sel_id} for question {qid}: {e}")
                                 continue
                     
-                    st.multiselect("Seçimleriniz:", opt_labels, default=default_selections, key=f"wdg_{qid}")
+                    st.multiselect("Seçimleriniz:", opt_labels, default=default_selections, key=widget_key)
                 
                 else: # openText, numeric
                     # Debug: Form değerini logla
                     text_value = str(current_val) if current_val else ""
                     print(f"DEBUG Q{qid}: text_area value = '{text_value[:50]}...' from form_data")
-                    st.text_area("Yanıt:", value=text_value, key=f"wdg_{qid}")
+                    st.text_area("Yanıt:", value=text_value, key=widget_key, height=150)
                 
                 # AI KANIT KUTUSU
                 if evidence:

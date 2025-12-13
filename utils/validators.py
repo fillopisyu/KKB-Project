@@ -72,10 +72,17 @@ def should_use_web_scraper(doc_res: str, data_res: str, question: str = "") -> b
     - Tamamen belirsiz
     
     CEVAP FORMATI (JSON):
+    SADECE tek bir JSON objesi dön, array değil! confidence_score mutlaka SAYI olmalı (fifty, seksen gibi kelime KULLANMA!)
+    
     {{
-        "confidence_score": 0-100 arası sayı,
+        "confidence_score": 75,
         "reason": "Kısa açıklama (Türkçe, neden bu skoru verdin?)"
     }}
+    
+    ÖNEMLİ: 
+    - Array kullanma: [{{...}}] YANLIŞ
+    - Tek obje kullan: {{...}} DOĞRU
+    - confidence_score mutlaka sayı: 75 ✓, "seventy-five" ✗
     
     ÖRNEKLER:
     
