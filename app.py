@@ -232,7 +232,7 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
       "evidence": {{
         "answer": "Nihai cevap değeri. Örnek: '24,000 kWh' veya 'Evet, politika mevcut'",
         "proof": "DETAYLI TÜRKÇE AÇIKLAMA: Cevabın nasıl bulunduğunu, hesaplama varsa adım adım göster, hangi verilerin kullanıldığını açıkla. Minimum 2-3 cümle. Örnek: 'Sürdürülebilirlik Raporu'nda 2023 yılı için 24 MWh enerji tüketimi belirtilmiştir. Sorunun istediği birim kWh olduğu için dönüşüm yapıldı: 24 MWh × 1000 = 24,000 kWh. Bu değer şirketin toplam elektrik tüketimini göstermektedir.'",
-        "reference": "Kaynak bilgisi: Dosya adı, Sayfa numarası, Tablo/Bölüm adı. Örnek: 'Kaynak: Sürdürülebilirlik Raporu 2023, Sayfa 34, Enerji Tüketimi Tablosu'"
+        "reference": "Kaynak bilgisi: Dosya adı, Sayfa numarası, Tablo/Bölüm adı. ÖNEMLİ: Doküman ajanından gelen bilgilerde [Sayfa X] veya (Sayfa X) formatında sayfa numarası varsa MUTLAKA kullan ve referansa ekle. Örnek: 'Kaynak: Sürdürülebilirlik Raporu 2023, Sayfa 34, Enerji Tüketimi Tablosu'"
       }}
     }}
     

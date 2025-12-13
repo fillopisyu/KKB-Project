@@ -197,7 +197,13 @@ def process_vector(file_path, file_name, ext):
         raw_docs = loader.load()
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
         chunks = splitter.split_documents(raw_docs)
-        for c in chunks: c.metadata["source"] = file_name
+        
+        # Mevcut metadata'yı koru (özellikle PyPDFLoader'dan gelen 'page' bilgisi)
+        for c in chunks:
+            if not c.metadata:
+                c.metadata = {}
+            c.metadata["source"] = file_name  # Sadece source ekle, diğer metadata'lar korunur
+        
         print(f"   ✅ {len(chunks)} parça metin çıkarıldı.")
 
     except Exception as e:

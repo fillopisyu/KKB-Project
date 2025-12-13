@@ -137,3 +137,28 @@
 2025-12-13 13:43:16 - finsage - INFO - Qq6: Doc agent response length: 24
 2025-12-13 13:43:21 - finsage - INFO - Qq6: Analysis complete - Confidence: 99%, Time: 103.54s
 2025-12-13 13:43:27 - finsage - INFO - Qq2: Analysis complete - Confidence: 78%, Time: 130.42s
+2025-12-13 14:29:23 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 14:29:23 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 14:29:23 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 14:29:23 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 14:29:23 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 14:29:23 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 14:29:27 - finsage - INFO - Qq1: Data agent response length: 38
+2025-12-13 14:29:28 - finsage - INFO - Qq4: Data agent response length: 38
+2025-12-13 14:29:31 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 14:29:37 - finsage - INFO - Qq2: Data agent response length: 412
+2025-12-13 14:29:42 - finsage - INFO - Qq4: Doc agent response length: 1143
+2025-12-13 14:29:44 - finsage - INFO - Qq1: Doc agent response length: 1202
+2025-12-13 14:29:51 - finsage - INFO - Qq4: Analysis complete - Confidence: 95%, Time: 28.24s
+2025-12-13 14:29:51 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 14:29:55 - finsage - INFO - Qq3: Data agent response length: 647
+2025-12-13 14:29:56 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 32.72s
+2025-12-13 14:30:11 - finsage - INFO - Qq5: Doc agent response length: 608
+2025-12-13 14:30:17 - finsage - INFO - Qq6: Data agent response length: 472
+2025-12-13 14:30:21 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 58.36s
+2025-12-13 14:31:25 - finsage - INFO - Qq3: Doc agent response length: 229
+2025-12-13 14:31:42 - finsage - INFO - Qq3: Analysis complete - Confidence: 70%, Time: 138.80s
+2025-12-13 14:31:58 - finsage - INFO - Qq2: Doc agent response length: 116
+2025-12-13 14:32:03 - finsage - INFO - Qq6: Doc agent response length: 155
+2025-12-13 14:32:10 - finsage - INFO - Qq2: Analysis complete - Confidence: 98%, Time: 166.82s
+2025-12-13 14:32:11 - finsage - INFO - Qq6: Analysis complete - Confidence: 95%, Time: 139.68s

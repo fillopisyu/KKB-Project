@@ -18,7 +18,29 @@ def create_retriever_tool_manual(retriever, name, description):
         docs = retriever.invoke(query)
         if not docs:
             return "Dokümanlarda ilgili bilgi bulunamadı."
-        return "\n\n".join([doc.page_content for doc in docs])
+        
+        # Sayfa numarası ve kaynak bilgisiyle birlikte döndür
+        results = []
+        for doc in docs:
+            content = doc.page_content
+            
+            # Metadata bilgilerini ekle
+            metadata_info = []
+            if "page" in doc.metadata:
+                # PyPDFLoader 0-indexed kullanır, kullanıcı için 1-indexed yap
+                page_num = doc.metadata["page"] + 1
+                metadata_info.append(f"Sayfa {page_num}")
+            
+            if "source" in doc.metadata:
+                metadata_info.append(f"Kaynak: {doc.metadata['source']}")
+            
+            # Metadata varsa içeriğin sonuna ekle
+            if metadata_info:
+                content += f"\n[{', '.join(metadata_info)}]"
+            
+            results.append(content)
+        
+        return "\n\n---\n\n".join(results)
 
     return Tool(
         name=name,
@@ -66,20 +88,22 @@ def get_doc_agent():
 
         KURALLAR:
         1. Asla uydurma, mutlaka dokümanda ara.
-        2. Her bilginin yanına (Kaynak: Faaliyet Raporu) gibi not düş.
+        2. Her bilginin yanına kaynak ve sayfa numarası belirt.
+           Format: (Kaynak: [Dosya Adı], Sayfa [X])
         3. Bilgi yoksa "Dokümanlarda bulunamadı" de.
+        4. Arama sonuçlarında [Sayfa X, Kaynak: ...] formatında bilgi varsa mutlaka kullan.
         
         BİRİM DÖNÜŞÜMLERİ:
-        4. Eğer soru belirli bir birimde (örn: kWh) cevap istiyorsa, dokümanda farklı birimlerde (MWh, GWh) veri olabilir.
-        5. Mutlaka birim dönüşümü yap ve doğru sonucu ver.
+        5. Eğer soru belirli bir birimde (örn: kWh) cevap istiyorsa, dokümanda farklı birimlerde (MWh, GWh) veri olabilir.
+        6. Mutlaka birim dönüşümü yap ve doğru sonucu ver.
         
         Önemli Dönüşümler:
         - Enerji: 1 MWh = 1,000 kWh | 1 GWh = 1,000,000 kWh
         - Emisyon: 1 ton = 1,000 kg | 1 kton = 1,000 ton
         - Su: 1 m³ = 1,000 litre
         
-        Örnek: Soru "kWh cinsinden elektrik tüketimi" soruyor ama dokümanda "150 MWh" yazıyorsa, 
-        cevabın "150,000 kWh" olmalı.
+        Örnek: Soru "kWh cinsinden elektrik tüketimi" soruyor ama dokümanda "150 MWh [Sayfa 34, Kaynak: Rapor.pdf]" yazıyorsa, 
+        cevabın "150,000 kWh (Kaynak: Rapor.pdf, Sayfa 34)" olmalı.
         """
     )
 
