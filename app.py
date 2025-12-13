@@ -198,7 +198,7 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
                 logger.error(f"Q{q_id}: Web scraper error: {e}")
                 web_res = None
 
-    # 4. AI Reasoning
+    # 4. AI Reasoning with Math Tool Support
     parser = JsonOutputParser()
     prompt = ChatPromptTemplate.from_template("""
     GÖREV: Aşağıdaki soruyu elindeki Rapor ve Web verilerine göre cevapla.
@@ -213,10 +213,15 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
     - Web: {web_res}
     
     ÖNEMLİ KURALLAR:
-    1. Eğer soru belirli bir birimde cevap istiyorsa (örn: kWh, kg, litre), 
-       kaynaklarda farklı birimlerde veri varsa (MWh, ton, m³) mutlaka dönüştür!
-    2. Tüm çıktılar TÜRKÇE olmalıdır. İngilizce kelime veya cümle kullanma.
-    3. Kanıt açıklaması detaylı ve somut olmalıdır.
+    1. MATEMATİKSEL İŞLEMLER: Eğer hesaplama gerekiyorsa (toplama, çarpma, birim dönüşümü), 
+       hesaplama adımlarını açıkça göster. Örnek: "24 MWh × 1000 = 24,000 kWh"
+    
+    2. BİRİM DÖNÜŞÜMLERİ: Soru belirli bir birimde cevap istiyorsa (örn: kWh, kg, litre), 
+       kaynaklarda farklı birimlerde veri varsa (MWh, ton, m³) mutlaka dönüştür ve hesaplamayı göster!
+    
+    3. DİL: Tüm çıktılar TÜRKÇE olmalıdır. İngilizce kelime veya cümle kullanma.
+    
+    4. KANITLAMA: Her cevap için kaynak, kanıt ve referans belirt.
     
     İSTENEN ÇIKTI (JSON):
     {{
@@ -224,14 +229,34 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
       "selected_id": "Eğer singleChoice ise eşleşen answerId (yoksa null)",
       "selected_ids": "Eğer multiChoice ise eşleşen answerId'lerin listesi (örn: [1, 3, 5])",
       "confidence_score": 0-100 arası sayı,
-      "evidence_summary": "DETAYLI TÜRKÇE KANIT: Bu cevabı neden seçtiğini açıkla. Hangi belgeden/tablodan alındığını, sayfa numarasını, hesaplama varsa nasıl yapıldığını, hangi satır/sütunda bulunduğunu belirt. Minimum 2-3 cümle yaz. Örnek: 'Sürdürülebilirlik Raporu sayfa 45'teki Kapsam 1 Emisyonlar tablosunda 2023 yılı için 11.932 tCO2e değeri bulunmaktadır. Bu değer doğrudan operasyonel faaliyetlerden kaynaklanan emisyonları göstermektedir.'"
+      "evidence": {{
+        "answer": "Nihai cevap değeri. Örnek: '24,000 kWh' veya 'Evet, politika mevcut'",
+        "proof": "DETAYLI TÜRKÇE AÇIKLAMA: Cevabın nasıl bulunduğunu, hesaplama varsa adım adım göster, hangi verilerin kullanıldığını açıkla. Minimum 2-3 cümle. Örnek: 'Sürdürülebilirlik Raporu'nda 2023 yılı için 24 MWh enerji tüketimi belirtilmiştir. Sorunun istediği birim kWh olduğu için dönüşüm yapıldı: 24 MWh × 1000 = 24,000 kWh. Bu değer şirketin toplam elektrik tüketimini göstermektedir.'",
+        "reference": "Kaynak bilgisi: Dosya adı, Sayfa numarası, Tablo/Bölüm adı. Örnek: 'Kaynak: Sürdürülebilirlik Raporu 2023, Sayfa 34, Enerji Tüketimi Tablosu'"
+      }}
     }}
     
-    ÖNEMLİ: evidence_summary alanı mutlaka TÜRKÇE olmalı ve şu bilgileri içermeli:
-    - Hangi kaynaktan alındı (dosya adı, sayfa, tablo adı)
-    - Veri nasıl bulundu veya hesaplandı
-    - Varsa birim dönüşümü detayları
-    - Cevabın güvenilirliğini destekleyen ek bilgiler
+    KANIT (evidence) YAPISI ÖRNEKLERİ:
+    
+    Örnek 1 - Matematiksel İşlem:
+    {{
+      "answer": "11,932,000 kg",
+      "proof": "Kapsam 1 Emisyonlar tablosunda 2023 yılı için 11.932 tCO2e değeri bulunmaktadır. Sorunun istediği birim kg olduğu için dönüşüm yapıldı: 11.932 ton × 1000 = 11,932 kg. Bu değer doğrudan operasyonel faaliyetlerden kaynaklanan sera gazı emisyonlarını temsil etmektedir.",
+      "reference": "Kaynak: Sürdürülebilirlik Raporu 2023, Sayfa 45, Kapsam 1 Emisyonlar Tablosu"
+    }}
+    
+    Örnek 2 - Seçenekli Soru:
+    {{
+      "answer": "Evet",
+      "proof": "Şirketin 2023 Sürdürülebilirlik Raporu'nun 'Çevre Politikaları' bölümünde detaylı bir çevre yönetim politikası açıklanmıştır. Politika, emisyon azaltma hedeflerini, enerji verimliliği önlemlerini ve atık yönetimi stratejilerini içermektedir.",
+      "reference": "Kaynak: Sürdürülebilirlik Raporu 2023, Sayfa 12-15, Çevre Politikaları Bölümü"
+    }}
+    
+    ÖNEMLİ: 
+    - "answer" alanı kısa ve net olmalı (sadece cevap)
+    - "proof" alanı detaylı açıklama ve hesaplamalar içermeli (2-3 cümle)
+    - "reference" alanı tam kaynak bilgisi vermeli (dosya, sayfa, tablo)
+    - Tüm alanlar TÜRKÇE olmalı
     """)
     
     try:
@@ -396,26 +421,31 @@ with tab1:
                     qid = future_to_qid[future]
                     try:
                         ai_res = future.result(timeout=AppConfig.AGENT_TIMEOUT_SECONDS)
-                        # STATE'E KAYDET
+                        # STATE'E KAYDET - Handle both old and new evidence formats
+                        evidence_data = ai_res.get("evidence", ai_res.get("evidence_summary", {}))
                         st.session_state.form_data[qid] = {
                             "value": ai_res.get("suggested_value"),
                             "selected_id": ai_res.get("selected_id"),
                             "selected_ids": ai_res.get("selected_ids", []),
                             "confidence": ai_res.get("confidence_score"),
-                            "evidence": ai_res.get("evidence_summary"),
+                            "evidence": evidence_data,  # Can be dict or string
                             "elapsed_time": ai_res.get("elapsed_time", 0)
                         }
                     except concurrent.futures.TimeoutError:
                         logger.error(f"Q{qid}: Timeout after {AppConfig.AGENT_TIMEOUT_SECONDS}s")
                         st.session_state.form_data[qid] = {
                             "value": "", "selected_id": None, "selected_ids": [],
-                            "confidence": 0, "evidence": "Zaman aşımı", "elapsed_time": AppConfig.AGENT_TIMEOUT_SECONDS
+                            "confidence": 0, 
+                            "evidence": {"answer": "", "proof": "Zaman aşımı", "reference": ""}, 
+                            "elapsed_time": AppConfig.AGENT_TIMEOUT_SECONDS
                         }
                     except Exception as e:
                         logger.error(f"Q{qid}: Processing error: {e}")
                         st.session_state.form_data[qid] = {
                             "value": "", "selected_id": None, "selected_ids": [],
-                            "confidence": 0, "evidence": f"Hata: {str(e)}", "elapsed_time": 0
+                            "confidence": 0, 
+                            "evidence": {"answer": "", "proof": f"Hata: {str(e)}", "reference": ""}, 
+                            "elapsed_time": 0
                         }
                     
                     completed_count += 1
@@ -556,12 +586,40 @@ with tab1:
                         color = "#f87171"  # Red
                         icon = "❌"
                     
-                    st.markdown(f"""
-                    <div class="evidence-box" style="border-left: 3px solid {color};">
-                        <strong>{icon} AI Önerisi ({confidence}% Güven) • ⏱️ {elapsed_str}</strong><br>
-                        {evidence}
-                    </div>
-                    """, unsafe_allow_html=True)
+                    # Format evidence - handle both structured (dict) and old (string) formats
+                    if isinstance(evidence, dict):
+                        # New structured format
+                        answer_text = evidence.get("answer", "")
+                        proof_text = evidence.get("proof", "")
+                        reference_text = evidence.get("reference", "")
+                        
+                        evidence_html = f"""
+                        <div class="evidence-box" style="border-left: 3px solid {color};">
+                            <strong>{icon} AI Önerisi ({confidence}% Güven) • ⏱️ {elapsed_str}</strong><br><br>
+                            <div style="margin-bottom: 8px;">
+                                <strong style="color: #60a5fa;">📌 Cevap:</strong><br>
+                                <span style="margin-left: 10px;">{answer_text}</span>
+                            </div>
+                            <div style="margin-bottom: 8px;">
+                                <strong style="color: #a78bfa;">🔍 Kanıt:</strong><br>
+                                <span style="margin-left: 10px;">{proof_text}</span>
+                            </div>
+                            <div>
+                                <strong style="color: #fbbf24;">📚 Kaynak:</strong><br>
+                                <span style="margin-left: 10px;">{reference_text}</span>
+                            </div>
+                        </div>
+                        """
+                    else:
+                        # Old string format (backward compatibility)
+                        evidence_html = f"""
+                        <div class="evidence-box" style="border-left: 3px solid {color};">
+                            <strong>{icon} AI Önerisi ({confidence}% Güven) • ⏱️ {elapsed_str}</strong><br>
+                            {evidence}
+                        </div>
+                        """
+                    
+                    st.markdown(evidence_html, unsafe_allow_html=True)
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
