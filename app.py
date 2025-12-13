@@ -2,12 +2,25 @@ import streamlit as st
 import os
 import time
 import json
+import logging
 import concurrent.futures
 from datetime import datetime
+from typing import Dict, List
 from langchain_core.messages import HumanMessage
+from streamlit.runtime.scriptrunner import get_script_run_ctx
+
+# Configure logging FIRST
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%H:%M:%S'
+)
+logger = logging.getLogger(__name__)
+
+# Now import other modules
 from agents.data_agent import get_data_agent
 from agents.doc_agent import get_doc_agent
-from agents.web_scraper import get_web_scraper_agent
+from agents.web_scraper_trafilatura import get_web_scraper_agent
 from agents.evaluator import evaluate_answer
 from ingestion.processor import ingest_files
 from core.config import llm_reasoning, AppConfig
@@ -199,15 +212,25 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
 
     # 3. Web Scraper (Smart Trigger)
     web_res = None
+    
+    # Debug: URL sayısını göster
+    print(f"\n🔍 DEBUG Q{q_id}: manual_urls = {len(manual_urls) if manual_urls else 0}")
+    print(f"🔍 DEBUG Q{q_id}: Checking web trigger...")
+    
     if should_use_web_scraper(doc_res, d_res, question=q_txt):  # LLM karar verir
+        print(f"✅ DEBUG Q{q_id}: Web trigger = TRUE!")
+        
         if not manual_urls:
             logger.info(f"Q{q_id}: Web scraper suggested but no URLs available, skipping")
+            print(f"⚠️ DEBUG Q{q_id}: BUT NO URLs!")
         else:
             try:
+                print(f"🌐 DEBUG Q{q_id}: CALLING PLAYWRIGHT with {len(manual_urls)} URLs")
                 logger.info(f"Q{q_id}: Triggering web scraper with {len(manual_urls)} URLs")
                 scraper = get_web_scraper_agent()
                 web_res = scraper(q_txt, manual_urls=manual_urls, use_crawl=use_crawl, 
                                 max_depth=crawl_depth, limit=crawl_limit)
+                print(f"✅ DEBUG Q{q_id}: Web result: {len(web_res) if web_res else 0} chars")
                 logger.info(f"Q{q_id}: Web scraper response length: {len(web_res) if web_res else 0}")
             except Exception as e:
                 logger.error(f"Q{q_id}: Web scraper error: {e}")
@@ -324,7 +347,7 @@ if "target_urls" not in st.session_state:
 if "form_data" not in st.session_state: st.session_state.form_data = {} # To store filled values
 if "form_questions" not in st.session_state: st.session_state.form_questions = []
 # Crawl settings
-if "use_crawl" not in st.session_state: st.session_state.use_crawl = True
+if "use_crawl" not in st.session_state: st.session_state.use_crawl = False  # Varsayılan: sadece ana sayfa
 if "crawl_depth" not in st.session_state: st.session_state.crawl_depth = 2
 if "crawl_limit" not in st.session_state: st.session_state.crawl_limit = 10
 
@@ -363,7 +386,7 @@ with st.sidebar:
         st.markdown("**Tarama Modu:**")
         st.session_state.use_crawl = st.checkbox(
             "🕷️ Alt sayfaları da tara (Crawl Mode)",
-            value=st.session_state.use_crawl,
+            value=False,  # Varsayılan: KAPALI - sadece verilen URL'i tara
             help="Aktif olduğunda, ana URL'deki tüm bağlantıları takip ederek alt sayfaları da tarar."
         )
         
@@ -505,6 +528,24 @@ with tab1:
             else:
                 st.success("✅ Analiz Tamamlandı! Form dolduruluyor...")
             
+            # Performance summary log
+            all_times = [st.session_state.form_data[str(q["questionId"])].get("elapsed_time", 0) 
+                        for q in st.session_state.form_questions 
+                        if str(q["questionId"]) in st.session_state.form_data]
+            
+            if all_times:
+                avg_time = sum(all_times) / len(all_times)
+                total_time = sum(all_times)
+                logger.info("="*60)
+                logger.info("📊 SORU CEVAPLAMA PERFORMANS RAPORU")
+                logger.info("="*60)
+                logger.info(f"  Toplam Soru: {len(all_times)}")
+                logger.info(f"  Toplam Süre: {total_time:.1f}s")
+                logger.info(f"  Ortalama Süre/Soru: {avg_time:.1f}s")
+                logger.info(f"  En Hızlı: {min(all_times):.1f}s")
+                logger.info(f"  En Yavaş: {max(all_times):.1f}s")
+                logger.info("="*60)
+            
             # Immediately rerun to show filled form
             st.rerun()
 
@@ -606,9 +647,7 @@ with tab1:
                     st.multiselect("Seçimleriniz:", opt_labels, default=default_selections, key=widget_key)
                 
                 else: # openText, numeric
-                    # Debug: Form değerini logla
                     text_value = str(current_val) if current_val else ""
-                    print(f"DEBUG Q{qid}: text_area value = '{text_value[:50]}...' from form_data")
                     st.text_area("Yanıt:", value=text_value, key=widget_key, height=150)
                 
                 # AI KANIT KUTUSU

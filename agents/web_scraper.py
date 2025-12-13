@@ -1,4 +1,5 @@
 import os
+import logging
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from core.config import llm_reasoning
@@ -9,6 +10,9 @@ from ingestion.processor import URL_STORE
 
 # .env yükle
 load_dotenv()
+
+# Logger
+logger = logging.getLogger(__name__)
 
 # Firecrawl Kütüphanesi Kontrolü
 try:
@@ -48,69 +52,85 @@ def scrape_with_firecrawl(url, use_crawl=False, max_depth=2, limit=10):
 
         # --- CRAWL MODE (Alt sayfaları da tara) ---
         if use_crawl:
-            print(f"🕷️ Firecrawl CRAWLING: {url} (Derinlik: {max_depth}, Limit: {limit})...")
+            logger.info(f"🕷️ Firecrawl CRAWLING: {url} (Limit: {limit})...")
             
-            crawl_params = {
-                'limit': limit,
-                'scrapeOptions': {'formats': ['markdown']},
-                'maxDepth': max_depth
-            }
-            
-            # Crawl metodu kontrolü
-            if hasattr(app, 'crawl_url'):
-                crawl_result = app.crawl_url(url, params=crawl_params)
-            elif hasattr(app, 'crawl'):
-                crawl_result = app.crawl(url, params=crawl_params)
-            else:
-                return "HATA: Firecrawl kütüphanesi 'crawl_url' metodunu desteklemiyor. Lütfen güncelleyin."
-            
-            # Sonuçları işle
-            if isinstance(crawl_result, dict):
-                pages = crawl_result.get('data', [])
-                if not pages:
-                    return "UYARI: Crawl sonucu boş döndü."
+            try:
+                # Firecrawl v2 API - doğru format
+                docs = app.crawl(url=url, limit=limit)
                 
-                # Her sayfanın markdown içeriğini çıkar
-                processed_pages = []
-                for page in pages:
-                    page_url = page.get('url', url)
-                    markdown = page.get('markdown', '')
-                    if markdown:
-                        processed_pages.append({
-                            'url': page_url,
-                            'markdown': markdown
-                        })
+                # Debug: Full response
+                logger.info(f"Firecrawl crawl response type: {type(docs)}")
+                logger.info(f"Firecrawl crawl response: {str(docs)[:200]}")
                 
-                print(f"   ✅ {len(processed_pages)} sayfa tarandı.")
-                return {'pages': processed_pages}
-            else:
-                return "HATA: Crawl sonucu beklenmeyen formatta."
+                # Response kontrolü
+                if not docs or not isinstance(docs, list):
+                    error_msg = "UYARI: Crawl sonucu boş döndü."
+                    logger.warning(f"Crawl failed: {error_msg}, Response: {docs}")
+                    return error_msg
+                
+                logger.info(f"   ✅ {len(docs)} sayfa tarandı.")
+                
+                # Her sayfanın markdown'ını birleştir
+                all_content = []
+                for doc in docs:
+                    if isinstance(doc, dict):
+                        markdown = doc.get('markdown', '')
+                        url_crawled = doc.get('url', url)
+                        if markdown:
+                            all_content.append(f"=== {url_crawled} ===\n{markdown}\n")
+                
+                if not all_content:
+                    error_msg = "UYARI: Crawl sonuçlarında markdown bulunamadı."
+                    logger.warning(f"{error_msg} Docs content: {docs}")
+                    return error_msg
+                
+                final_content = "\n\n".join(all_content)
+                logger.info(f"Crawl success: {len(final_content)} characters extracted")
+                return final_content
+                
+            except Exception as e:
+                logger.error(f"Firecrawl Crawl exception: {type(e).__name__}: {str(e)}")
+                # Crawl başarısız, scrape'e düş
+                logger.warning("Crawl başarısız, scrape moduna geçiliyor...")
 
         # --- SCRAPE MODE (Sadece tek sayfa) ---
-        else:
-            print(f"🔥 Firecrawl SCRAPING: {url}...")
+        # Crawl başarısızsa veya use_crawl=False ise
+        logger.info(f"🔥 Firecrawl SCRAPING: {url}...")
+        
+        try:
+            # Firecrawl v2 API - doğru format
+            result = app.scrape(url, formats=["markdown"])
             
-            params = {'formats': ['markdown']}
-
-            if hasattr(app, 'scrape_url'):
-                scrape_result = app.scrape_url(url, params=params)
-            elif hasattr(app, 'scrape'):
-                scrape_result = app.scrape(url, params=params)
-            else:
-                return "HATA: Firecrawl kütüphanesi yüklü ancak 'scrape_url' metodu bulunamadı."
-
-            # Sonucu Al
-            if isinstance(scrape_result, dict):
-                content = scrape_result.get('markdown', '')
+            # Debug: Full response
+            logger.info(f"Firecrawl scrape response type: {type(result)}")
+            
+            # Firecrawl returns a Document object, not a dict!
+            content = None
+            
+            if hasattr(result, 'markdown'):
+                # Direct attribute access
+                content = result.markdown
+                logger.info(f"Got markdown from result.markdown: {len(content) if content else 0} chars")
+            elif isinstance(result, dict):
+                # Fallback: dict access
+                content = result.get('markdown', '')
                 if not content:
-                    content = scrape_result.get('data', {}).get('markdown', '')
+                    data = result.get('data', {})
+                    content = data.get('markdown', '') if isinstance(data, dict) else ''
+                logger.info(f"Got markdown from dict: {len(content) if content else 0} chars")
             else:
-                content = str(scrape_result)
-
+                logger.warning(f"Unknown result type: {type(result)}")
+            
             if not content:
                 return "UYARI: Web sayfası boş döndü veya erişim engellendi."
 
+                return "UYARI: Web sayfası boş döndü veya erişim engellendi."
+
             return content
+            
+        except Exception as e:
+            logger.error(f"Firecrawl Scrape hatası: {e}")
+            return f"Scraping Hatası ({url}): {str(e)}"
 
     except Exception as e:
         return f"Scraping Hatası ({url}): {str(e)}"
@@ -163,14 +183,14 @@ def get_web_scraper_agent():
             return "❌ HATA: Taranacak URL bulunamadı. Lütfen 'data/inputs/urls.txt' dosyasına link ekleyin."
 
         mode_text = "CRAWLING (Alt sayfalar dahil)" if use_crawl else "SCRAPING (Sadece ana sayfa)"
-        print(f"🌍 Web Kazıyıcı Çalışıyor... Mod: {mode_text}, Hedef: {len(target_urls)} adres")
+        logger.info(f"🌍 Web Kazıyıcı Çalışıyor... Mod: {mode_text}, Hedef: {len(target_urls)} adres")
         results = []
 
         for url in target_urls:
             url = url.strip()
             if not url: continue
 
-            print(f"   ↳ Hedef Taranıyor: {url}")
+            logger.info(f"   ↳ Hedef Taranıyor: {url}")
 
             # İçeriği Çek (Crawl veya Scrape)
             content = scrape_with_firecrawl(url, use_crawl=use_crawl, max_depth=max_depth, limit=limit)
@@ -183,7 +203,7 @@ def get_web_scraper_agent():
             # --- CRAWL MODE: Birden fazla sayfa ---
             if use_crawl and isinstance(content, dict) and 'pages' in content:
                 pages = content['pages']
-                print(f"      📄 {len(pages)} sayfa bulundu, analiz ediliyor...")
+                logger.info(f"      📄 {len(pages)} sayfa bulundu, analiz ediliyor...")
                 
                 page_results = []
                 for page in pages:
