@@ -39,3 +39,31 @@ llm_reasoning = ChatOpenAI(
 
 # --- SABİTLER ---
 VECTOR_DB_PATH = os.path.join(os.getcwd(), "data", "chroma_db")
+
+
+# --- UYGULAMA AYARLARI ---
+class AppConfig:
+    """Centralized application configuration"""
+    
+    # Agent settings
+    MAX_PARALLEL_WORKERS = 5
+    AGENT_TIMEOUT_SECONDS = 60
+    
+    # Web scraper defaults
+    DEFAULT_CRAWL_DEPTH = 2
+    DEFAULT_CRAWL_LIMIT = 10
+    DEFAULT_USE_CRAWL = True
+    
+    # Retrieval settings
+    DOC_RETRIEVAL_K = 5
+    MIN_DOC_RESPONSE_LENGTH = 50
+    MIN_DATA_RESPONSE_LENGTH = 20
+    
+    # Content limits
+    WEB_CONTENT_MAX_CHARS = 40000
+    SNIPPET_MAX_CHARS = 1000
+    
+    # Confidence thresholds
+    HIGH_CONFIDENCE_THRESHOLD = 70
+    MEDIUM_CONFIDENCE_THRESHOLD = 40
+    LOW_CONFIDENCE_THRESHOLD = 0

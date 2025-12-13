@@ -3,13 +3,17 @@ import os
 import time
 import json
 import concurrent.futures
+from datetime import datetime
 from langchain_core.messages import HumanMessage
 from agents.data_agent import get_data_agent
 from agents.doc_agent import get_doc_agent
 from agents.web_scraper import get_web_scraper_agent
 from agents.evaluator import evaluate_answer
 from ingestion.processor import ingest_files
-from core.config import llm_reasoning
+from core.config import llm_reasoning, AppConfig
+from core.logger import logger
+from core.unit_converter import validate_and_convert_answer
+from utils.validators import should_use_web_scraper, validate_ai_response, validate_question_structure
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
 from dotenv import load_dotenv
@@ -138,39 +142,63 @@ def solve_question_autofill_wrapper(ctx, question_obj, manual_urls, use_crawl, c
 def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, crawl_depth=2, crawl_limit=10):
     """Analyze a question and return suggested answer with timing information."""
     start_time = time.time()
+    q_id = question_obj.get("questionId", "unknown")
+    
+    # Validate question structure
+    if not validate_question_structure(question_obj):
+        logger.error(f"Q{q_id}: Invalid question structure")
+        return {
+            "suggested_value": "",
+            "selected_id": None,
+            "selected_ids": [],
+            "confidence_score": 0,
+            "evidence_summary": "Geçersiz soru yapısı",
+            "elapsed_time": 0
+        }
     
     q_txt = question_obj.get("questionDescription", "")
     q_type = question_obj.get("questionType", "")
     q_opts = question_obj.get("answers", [])
     
-    # 1. Gather Context
+    logger.info(f"Q{q_id}: Starting analysis - Type: {q_type}")
+    
+    # 1. Gather Context from Data Agent
     data_agent = get_data_agent()
     d_res = "Veri Yok"
     if data_agent:
-        try: d_res = data_agent(q_txt).content
-        except: pass
+        try:
+            d_res = data_agent(q_txt).content
+            logger.info(f"Q{q_id}: Data agent response length: {len(d_res)}")
+        except Exception as e:
+            logger.warning(f"Q{q_id}: Data agent error: {e}")
+            d_res = "Veri Yok"
     
+    # 2. Gather Context from Document Agent
     doc_agent = get_doc_agent()
     doc_res = "Doküman Yok"
-    if doc_agent: 
-        try: 
-            from langchain_core.messages import HumanMessage
+    if doc_agent:
+        try:
             doc_res = doc_agent.invoke({"messages": [HumanMessage(content=q_txt)]})["messages"][-1].content
-        except: pass
+            logger.info(f"Q{q_id}: Doc agent response length: {len(doc_res)}")
+        except Exception as e:
+            logger.warning(f"Q{q_id}: Doc agent error: {e}")
+            doc_res = "Doküman Yok"
 
+    # 3. Web Scraper (Smart Trigger)
     web_res = None
-    if "bulunamadı" in doc_res.lower() or len(doc_res) < 50:
+    if should_use_web_scraper(doc_res, d_res):
         if manual_urls:
             try:
+                logger.info(f"Q{q_id}: Triggering web scraper")
                 scraper = get_web_scraper_agent()
-                # Use crawl settings from UI
-                web_res = scraper(q_txt, manual_urls=manual_urls, use_crawl=use_crawl, max_depth=crawl_depth, limit=crawl_limit)
-            except: pass
+                web_res = scraper(q_txt, manual_urls=manual_urls, use_crawl=use_crawl, 
+                                max_depth=crawl_depth, limit=crawl_limit)
+                logger.info(f"Q{q_id}: Web scraper response length: {len(web_res) if web_res else 0}")
+            except Exception as e:
+                logger.error(f"Q{q_id}: Web scraper error: {e}")
+                web_res = None
 
-
-
-
-    # 2. AI Reasoning
+    # 4. AI Reasoning
     parser = JsonOutputParser()
     prompt = ChatPromptTemplate.from_template("""
     GÖREV: Aşağıdaki soruyu elindeki Rapor ve Web verilerine göre cevapla.
@@ -204,18 +232,32 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
             "d_res": d_res, "doc_res": doc_res, "web_res": web_res
         })
         
+        # Validate AI response
+        result = validate_ai_response(question_obj, result)
+        
+        # Apply unit conversion if needed
+        if result.get("suggested_value"):
+            result["suggested_value"] = validate_and_convert_answer(
+                q_txt, 
+                str(result["suggested_value"])
+            )
+        
         # Add elapsed time
         elapsed_time = time.time() - start_time
         result["elapsed_time"] = elapsed_time
         
+        logger.info(f"Q{q_id}: Analysis complete - Confidence: {result.get('confidence_score')}%, Time: {elapsed_time:.2f}s")
         return result
+        
     except Exception as e:
         elapsed_time = time.time() - start_time
+        logger.error(f"Q{q_id}: Analysis failed: {e}")
         return {
-            "suggested_value": "", 
-            "selected_id": None, 
-            "confidence_score": 0, 
-            "evidence_summary": f"Analiz hatası: {str(e)}", 
+            "suggested_value": "",
+            "selected_id": None,
+            "selected_ids": [],
+            "confidence_score": 0,
+            "evidence_summary": f"Analiz hatası: {str(e)}",
             "elapsed_time": elapsed_time
         }
 
@@ -313,7 +355,9 @@ with tab1:
     # "ANALİZ ET" BUTONU
     if st.session_state.form_questions:
         if st.button("✨ Yapay Zeka ile Formu Doldur", type="primary"):
+            logger.info(f"Starting autofill for {len(st.session_state.form_questions)} questions")
             prog_bar = st.progress(0, "Analiz Başlıyor...")
+            
             # PARALLEL PROCESSING
             total_questions = len(st.session_state.form_questions)
             completed_count = 0
@@ -321,18 +365,18 @@ with tab1:
             # Get current Streamlit context to pass to threads
             ctx = get_script_run_ctx() if get_script_run_ctx else None
             
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=AppConfig.MAX_PARALLEL_WORKERS) as executor:
                 # Submit all tasks with context
                 future_to_qid = {
                     executor.submit(
                         solve_question_autofill_wrapper,
                         ctx,  # Pass context to wrapper
-                        q, 
+                        q,
                         st.session_state.target_urls,
                         st.session_state.use_crawl,
                         st.session_state.crawl_depth,
                         st.session_state.crawl_limit
-                    ): q["questionId"] 
+                    ): q["questionId"]
                     for q in st.session_state.form_questions
                 }
 
@@ -342,7 +386,7 @@ with tab1:
                 for future in concurrent.futures.as_completed(future_to_qid):
                     qid = future_to_qid[future]
                     try:
-                        ai_res = future.result()
+                        ai_res = future.result(timeout=AppConfig.AGENT_TIMEOUT_SECONDS)
                         # STATE'E KAYDET
                         st.session_state.form_data[qid] = {
                             "value": ai_res.get("suggested_value"),
@@ -352,8 +396,18 @@ with tab1:
                             "evidence": ai_res.get("evidence_summary"),
                             "elapsed_time": ai_res.get("elapsed_time", 0)
                         }
+                    except concurrent.futures.TimeoutError:
+                        logger.error(f"Q{qid}: Timeout after {AppConfig.AGENT_TIMEOUT_SECONDS}s")
+                        st.session_state.form_data[qid] = {
+                            "value": "", "selected_id": None, "selected_ids": [],
+                            "confidence": 0, "evidence": "Zaman aşımı", "elapsed_time": AppConfig.AGENT_TIMEOUT_SECONDS
+                        }
                     except Exception as e:
-                        print(f"Error processing question {qid}: {e}")
+                        logger.error(f"Q{qid}: Processing error: {e}")
+                        st.session_state.form_data[qid] = {
+                            "value": "", "selected_id": None, "selected_ids": [],
+                            "confidence": 0, "evidence": f"Hata: {str(e)}", "elapsed_time": 0
+                        }
                     
                     completed_count += 1
                     prog_bar.progress(completed_count / total_questions, f"Analiz ediliyor... ({completed_count}/{total_questions})")
@@ -482,10 +536,20 @@ with tab1:
                     elapsed = ai_data.get("elapsed_time", 0)
                     elapsed_str = f"{elapsed:.1f}s" if elapsed < 60 else f"{int(elapsed//60)}m {int(elapsed%60)}s"
                     
-                    color = "#4ade80" if int(confidence or 0) > 70 else "#f87171"
+                    # Confidence-based color coding
+                    if int(confidence or 0) >= AppConfig.HIGH_CONFIDENCE_THRESHOLD:
+                        color = "#4ade80"  # Green
+                        icon = "✅"
+                    elif int(confidence or 0) >= AppConfig.MEDIUM_CONFIDENCE_THRESHOLD:
+                        color = "#fbbf24"  # Yellow
+                        icon = "⚠️"
+                    else:
+                        color = "#f87171"  # Red
+                        icon = "❌"
+                    
                     st.markdown(f"""
                     <div class="evidence-box" style="border-left: 3px solid {color};">
-                        <strong>🤖 AI Önerisi ({confidence}% Güven) • ⏱️ {elapsed_str}</strong><br>
+                        <strong>{icon} AI Önerisi ({confidence}% Güven) • ⏱️ {elapsed_str}</strong><br>
                         {evidence}
                     </div>
                     """, unsafe_allow_html=True)
@@ -496,9 +560,52 @@ with tab1:
             # SUBMIT
             submitted = st.form_submit_button("✅ Formu Onayla ve Kaydet")
             if submitted:
+                logger.info("Form submitted by user")
+                
+                # Prepare export data
+                export_data = {
+                    "formId": data.get("formId", "unknown"),
+                    "submittedAt": datetime.now().isoformat(),
+                    "totalQuestions": len(st.session_state.form_questions),
+                    "answers": []
+                }
+                
+                for q in st.session_state.form_questions:
+                    qid = q["questionId"]
+                    widget_key = f"wdg_{qid}"
+                    
+                    # Get user's final answer from widget
+                    user_answer = st.session_state.get(widget_key)
+                    ai_suggestion = st.session_state.form_data.get(qid, {})
+                    
+                    export_data["answers"].append({
+                        "questionId": qid,
+                        "questionText": q["questionDescription"],
+                        "questionType": q["questionType"],
+                        "userAnswer": user_answer,
+                        "aiSuggestion": {
+                            "value": ai_suggestion.get("value"),
+                            "confidence": ai_suggestion.get("confidence"),
+                            "evidence": ai_suggestion.get("evidence"),
+                            "processingTime": ai_suggestion.get("elapsed_time")
+                        }
+                    })
+                
+                # Create JSON download
+                json_str = json.dumps(export_data, ensure_ascii=False, indent=2)
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                
+                st.download_button(
+                    label="📥 Cevapları İndir (JSON)",
+                    data=json_str,
+                    file_name=f"form_answers_{timestamp}.json",
+                    mime="application/json",
+                    type="primary"
+                )
+                
                 st.balloons()
-                st.success("Form başarıyla kaydedildi! (Export işlemi burada yapılabilir)")
-                # JSON Export logic could go here
+                st.success("✅ Form başarıyla kaydedildi! Yukarıdaki butona tıklayarak indirebilirsiniz.")
+                logger.info(f"Form exported with {len(export_data['answers'])} answers")
     else:
         st.info("Lütfen sol taraftan veya yukarıdan bir Soru JSON dosyası yükleyin.")
 

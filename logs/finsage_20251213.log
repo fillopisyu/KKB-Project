@@ -1,0 +1,11 @@
+2025-12-13 05:17:10 - finsage - INFO - Web scraper triggered - Doc length: 10, Data length: 8
+2025-12-13 05:17:10 - finsage - INFO - Web scraper triggered - Doc length: 9, Data length: 12
+2025-12-13 05:17:10 - finsage - INFO - Web scraper triggered - Doc length: 4, Data length: 4
+2025-12-13 05:17:10 - finsage - INFO - Q1: Auto-fixed selected_id from 999 to 10 via text match
+2025-12-13 05:17:10 - finsage - WARNING - Q1 validation issues: Invalid selected_id 999, valid IDs: [10, 20]
+2025-12-13 05:17:10 - finsage - WARNING - Q1: Could not match text, defaulting to first option
+2025-12-13 05:17:10 - finsage - WARNING - Q1 validation issues: Invalid selected_id 999, valid IDs: [10, 20]
+2025-12-13 05:17:10 - finsage - WARNING - Q2: Filtered out invalid IDs: [999, 888]
+2025-12-13 05:17:10 - finsage - WARNING - Q2 validation issues: Invalid IDs in selected_ids: [999, 888]
+2025-12-13 05:17:10 - finsage - WARNING - Q2: Filtered out invalid IDs: [999, 888]
+2025-12-13 05:17:10 - finsage - WARNING - Q2 validation issues: Invalid IDs in selected_ids: [999, 888]
