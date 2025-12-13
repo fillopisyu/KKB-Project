@@ -1,6 +1,15 @@
 import os
 import pandas as pd
 from typing import List, Dict, Set
+import logging
+
+# Suppress verbose output from third-party libraries
+# This prevents "Need to load profiles" and similar messages from Unstructured
+logging.getLogger("unstructured").setLevel(logging.WARNING)
+logging.getLogger("unstructured_inference").setLevel(logging.WARNING)
+logging.getLogger("unstructured.partition").setLevel(logging.WARNING)
+logging.getLogger("PIL").setLevel(logging.WARNING)
+logging.getLogger("pdfminer").setLevel(logging.WARNING)
 
 # LangChain Yükleyicileri
 from langchain_community.document_loaders import (

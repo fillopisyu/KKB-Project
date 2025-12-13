@@ -9,3 +9,131 @@
 2025-12-13 05:17:10 - finsage - WARNING - Q2 validation issues: Invalid IDs in selected_ids: [999, 888]
 2025-12-13 05:17:10 - finsage - WARNING - Q2: Filtered out invalid IDs: [999, 888]
 2025-12-13 05:17:10 - finsage - WARNING - Q2 validation issues: Invalid IDs in selected_ids: [999, 888]
+2025-12-13 05:20:47 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 05:20:47 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 05:20:47 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 05:20:47 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 05:20:47 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 05:20:47 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 05:20:50 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 05:20:50 - finsage - INFO - Qq1: Data agent response length: 38
+2025-12-13 05:20:53 - finsage - INFO - Qq4: Data agent response length: 523
+2025-12-13 05:20:54 - finsage - INFO - Qq2: Data agent response length: 308
+2025-12-13 05:21:04 - finsage - INFO - Qq5: Doc agent response length: 559
+2025-12-13 05:21:04 - finsage - INFO - Qq1: Doc agent response length: 1089
+2025-12-13 05:21:07 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 20.15s
+2025-12-13 05:21:07 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 05:21:07 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 20.38s
+2025-12-13 05:21:11 - finsage - INFO - Qq3: Data agent response length: 821
+2025-12-13 05:21:22 - finsage - INFO - Qq6: Data agent response length: 576
+2025-12-13 05:21:28 - finsage - INFO - Qq4: Doc agent response length: 1125
+2025-12-13 05:21:31 - finsage - INFO - Qq4: Analysis complete - Confidence: 99%, Time: 44.33s
+2025-12-13 05:21:51 - finsage - INFO - Qq2: Doc agent response length: 223
+2025-12-13 05:21:54 - finsage - INFO - Qq2: Analysis complete - Confidence: 98%, Time: 66.69s
+2025-12-13 05:22:17 - finsage - INFO - Qq6: Doc agent response length: 189
+2025-12-13 05:22:18 - finsage - INFO - Qq6: Analysis complete - Confidence: 98%, Time: 71.04s
+2025-12-13 05:22:29 - finsage - INFO - Qq3: Doc agent response length: 265
+2025-12-13 05:22:33 - finsage - INFO - Qq3: Analysis complete - Confidence: 78%, Time: 106.39s
+2025-12-13 13:23:23 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 13:23:23 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 13:23:23 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 13:23:23 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 13:23:23 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 13:23:23 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 13:23:26 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 13:23:26 - finsage - INFO - Qq1: Data agent response length: 35
+2025-12-13 13:23:30 - finsage - INFO - Qq4: Data agent response length: 395
+2025-12-13 13:23:34 - finsage - INFO - Qq2: Data agent response length: 318
+2025-12-13 13:23:39 - finsage - INFO - Qq1: Doc agent response length: 914
+2025-12-13 13:23:44 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 20.73s
+2025-12-13 13:23:44 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 13:23:45 - finsage - INFO - Qq5: Doc agent response length: 530
+2025-12-13 13:23:48 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 25.49s
+2025-12-13 13:23:49 - finsage - INFO - Qq3: Data agent response length: 657
+2025-12-13 13:23:59 - finsage - INFO - Qq4: Doc agent response length: 599
+2025-12-13 13:24:02 - finsage - INFO - Qq6: Data agent response length: 626
+2025-12-13 13:24:03 - finsage - INFO - Qq4: Analysis complete - Confidence: 98%, Time: 39.76s
+2025-12-13 13:24:11 - finsage - INFO - Qq2: Doc agent response length: 197
+2025-12-13 13:24:14 - finsage - INFO - Qq2: Analysis complete - Confidence: 96%, Time: 51.27s
+2025-12-13 13:25:05 - finsage - INFO - Qq3: Doc agent response length: 284
+2025-12-13 13:25:06 - finsage - INFO - Qq6: Doc agent response length: 230
+2025-12-13 13:25:09 - finsage - INFO - Qq6: Analysis complete - Confidence: 98%, Time: 85.38s
+2025-12-13 13:25:09 - finsage - INFO - Qq3: Analysis complete - Confidence: 94%, Time: 106.40s
+2025-12-13 13:26:18 - finsage - INFO - Form submitted by user
+2025-12-13 13:31:53 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 13:31:53 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 13:31:53 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 13:31:53 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 13:31:53 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 13:31:53 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 13:31:56 - finsage - INFO - Qq1: Data agent response length: 38
+2025-12-13 13:31:56 - finsage - INFO - Qq4: Data agent response length: 35
+2025-12-13 13:31:57 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 13:32:05 - finsage - INFO - Qq2: Data agent response length: 119
+2025-12-13 13:32:12 - finsage - INFO - Qq3: Data agent response length: 759
+2025-12-13 13:32:41 - finsage - INFO - Qq1: Doc agent response length: 1360
+2025-12-13 13:32:47 - finsage - INFO - Qq5: Doc agent response length: 499
+2025-12-13 13:32:47 - finsage - INFO - Qq4: Doc agent response length: 693
+2025-12-13 13:32:47 - finsage - INFO - Qq1: Analysis complete - Confidence: 96%, Time: 53.82s
+2025-12-13 13:32:47 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 13:32:50 - finsage - INFO - Qq4: Analysis complete - Confidence: 96%, Time: 56.92s
+2025-12-13 13:32:50 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 57.15s
+2025-12-13 13:32:58 - finsage - INFO - Qq6: Data agent response length: 492
+2025-12-13 13:35:12 - finsage - INFO - Qq3: Doc agent response length: 786
+2025-12-13 13:35:21 - finsage - INFO - Qq3: Analysis complete - Confidence: 93%, Time: 207.90s
+2025-12-13 13:35:33 - finsage - INFO - Qq2: Doc agent response length: 213
+2025-12-13 13:35:36 - finsage - INFO - Qq2: Analysis complete - Confidence: 100%, Time: 222.27s
+2025-12-13 13:35:57 - finsage - INFO - Qq6: Doc agent response length: 566
+2025-12-13 13:35:59 - finsage - INFO - Qq6: Analysis complete - Confidence: 98%, Time: 192.10s
+2025-12-13 13:37:26 - finsage - INFO - Form submitted by user
+2025-12-13 13:37:26 - finsage - INFO - Form exported with 6 answers
+2025-12-13 13:40:04 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 13:40:04 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 13:40:04 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 13:40:04 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 13:40:04 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 13:40:04 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 13:40:06 - finsage - INFO - Qq1: Data agent response length: 38
+2025-12-13 13:40:10 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 13:40:11 - finsage - INFO - Qq4: Data agent response length: 368
+2025-12-13 13:40:16 - finsage - INFO - Qq2: Data agent response length: 244
+2025-12-13 13:40:16 - finsage - INFO - Qq1: Doc agent response length: 1144
+2025-12-13 13:40:20 - finsage - INFO - Qq3: Data agent response length: 556
+2025-12-13 13:40:23 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 19.12s
+2025-12-13 13:40:23 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 13:40:28 - finsage - INFO - Qq4: Doc agent response length: 620
+2025-12-13 13:40:28 - finsage - INFO - Qq5: Doc agent response length: 653
+2025-12-13 13:40:34 - finsage - INFO - Qq4: Analysis complete - Confidence: 98%, Time: 30.21s
+2025-12-13 13:40:36 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 32.26s
+2025-12-13 13:40:38 - finsage - INFO - Qq6: Data agent response length: 461
+2025-12-13 13:41:07 - finsage - INFO - Qq6: Doc agent response length: 128
+2025-12-13 13:41:11 - finsage - INFO - Qq6: Analysis complete - Confidence: 95%, Time: 47.91s
+2025-12-13 13:41:12 - finsage - INFO - Qq2: Doc agent response length: 151
+2025-12-13 13:41:17 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 13:41:17 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 13:41:17 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 13:41:17 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 13:41:17 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 13:41:17 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 13:41:18 - finsage - INFO - Qq1: Data agent response length: 35
+2025-12-13 13:41:18 - finsage - INFO - Qq2: Analysis complete - Confidence: 85%, Time: 74.86s
+2025-12-13 13:41:19 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 13:41:20 - finsage - INFO - Qq4: Data agent response length: 38
+2025-12-13 13:41:25 - finsage - INFO - Qq2: Data agent response length: 347
+2025-12-13 13:41:30 - finsage - INFO - Qq4: Doc agent response length: 730
+2025-12-13 13:41:35 - finsage - INFO - Qq1: Doc agent response length: 897
+2025-12-13 13:41:38 - finsage - INFO - Qq4: Analysis complete - Confidence: 96%, Time: 21.14s
+2025-12-13 13:41:38 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 13:41:41 - finsage - INFO - Qq3: Data agent response length: 967
+2025-12-13 13:41:43 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 26.09s
+2025-12-13 13:41:45 - finsage - INFO - Qq5: Doc agent response length: 703
+2025-12-13 13:41:53 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 36.00s
+2025-12-13 13:41:58 - finsage - INFO - Qq6: Data agent response length: 655
+2025-12-13 13:42:02 - finsage - INFO - Qq3: Doc agent response length: 323
+2025-12-13 13:42:12 - finsage - INFO - Qq3: Analysis complete - Confidence: 92%, Time: 128.21s
+2025-12-13 13:42:43 - finsage - INFO - Qq3: Doc agent response length: 324
+2025-12-13 13:42:52 - finsage - INFO - Qq3: Analysis complete - Confidence: 88%, Time: 95.54s
+2025-12-13 13:43:16 - finsage - INFO - Qq2: Doc agent response length: 153
+2025-12-13 13:43:16 - finsage - INFO - Qq6: Doc agent response length: 24
+2025-12-13 13:43:21 - finsage - INFO - Qq6: Analysis complete - Confidence: 99%, Time: 103.54s
+2025-12-13 13:43:27 - finsage - INFO - Qq2: Analysis complete - Confidence: 78%, Time: 130.42s

@@ -212,8 +212,11 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
     - Doküman: {doc_res}
     - Web: {web_res}
     
-    ÖNEMLİ: Eğer soru belirli bir birimde cevap istiyorsa (örn: kWh, kg, litre), 
-    kaynaklarda farklı birimlerde veri varsa (MWh, ton, m³) mutlaka dönüştür!
+    ÖNEMLİ KURALLAR:
+    1. Eğer soru belirli bir birimde cevap istiyorsa (örn: kWh, kg, litre), 
+       kaynaklarda farklı birimlerde veri varsa (MWh, ton, m³) mutlaka dönüştür!
+    2. Tüm çıktılar TÜRKÇE olmalıdır. İngilizce kelime veya cümle kullanma.
+    3. Kanıt açıklaması detaylı ve somut olmalıdır.
     
     İSTENEN ÇIKTI (JSON):
     {{
@@ -221,8 +224,14 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
       "selected_id": "Eğer singleChoice ise eşleşen answerId (yoksa null)",
       "selected_ids": "Eğer multiChoice ise eşleşen answerId'lerin listesi (örn: [1, 3, 5])",
       "confidence_score": 0-100 arası sayı,
-      "evidence_summary": "Bu cevabı neden seçtiğine dair 1 cümlelik kanıt/kaynak."
+      "evidence_summary": "DETAYLI TÜRKÇE KANIT: Bu cevabı neden seçtiğini açıkla. Hangi belgeden/tablodan alındığını, sayfa numarasını, hesaplama varsa nasıl yapıldığını, hangi satır/sütunda bulunduğunu belirt. Minimum 2-3 cümle yaz. Örnek: 'Sürdürülebilirlik Raporu sayfa 45'teki Kapsam 1 Emisyonlar tablosunda 2023 yılı için 11.932 tCO2e değeri bulunmaktadır. Bu değer doğrudan operasyonel faaliyetlerden kaynaklanan emisyonları göstermektedir.'"
     }}
+    
+    ÖNEMLİ: evidence_summary alanı mutlaka TÜRKÇE olmalı ve şu bilgileri içermeli:
+    - Hangi kaynaktan alındı (dosya adı, sayfa, tablo adı)
+    - Veri nasıl bulundu veya hesaplandı
+    - Varsa birim dönüşümü detayları
+    - Cevabın güvenilirliğini destekleyen ek bilgiler
     """)
     
     try:
@@ -591,21 +600,26 @@ with tab1:
                         }
                     })
                 
-                # Create JSON download
-                json_str = json.dumps(export_data, ensure_ascii=False, indent=2)
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                
-                st.download_button(
-                    label="📥 Cevapları İndir (JSON)",
-                    data=json_str,
-                    file_name=f"form_answers_{timestamp}.json",
-                    mime="application/json",
-                    type="primary"
-                )
+                # Store export data in session state
+                st.session_state.export_data = export_data
+                st.session_state.form_submitted = True
                 
                 st.balloons()
-                st.success("✅ Form başarıyla kaydedildi! Yukarıdaki butona tıklayarak indirebilirsiniz.")
+                st.success("✅ Form başarıyla kaydedildi! Aşağıdaki butona tıklayarak indirebilirsiniz.")
                 logger.info(f"Form exported with {len(export_data['answers'])} answers")
+        
+        # Download button OUTSIDE the form
+        if st.session_state.get("form_submitted", False) and "export_data" in st.session_state:
+            json_str = json.dumps(st.session_state.export_data, ensure_ascii=False, indent=2)
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            
+            st.download_button(
+                label="📥 Cevapları İndir (JSON)",
+                data=json_str,
+                file_name=f"form_answers_{timestamp}.json",
+                mime="application/json",
+                type="primary"
+            )
     else:
         st.info("Lütfen sol taraftan veya yukarıdan bir Soru JSON dosyası yükleyin.")
 
