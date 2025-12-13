@@ -27,6 +27,10 @@ def get_data_agent():
 
         GÖREVİN:
         Kullanıcının sorusunu AŞAĞIDAKİ HTML TABLOLARI içinde ara.
+        
+        ÖNEMLİ - DOSYA BİLGİSİ:
+        Bu veriler şu dosyadan geldi: {file_name}
+        Cevap verirken mutlaka bu dosya adını kullan!
 
         KESİN VE AŞILAMAZ KURALLAR:
         1. **ASLA UYDURMA:** Eğer cevap tabloda yoksa, sadece "Veri tablolarında bu bilgi bulunamadı" de. Asla dışarıdan bilgi (tarif, tarih, genel bilgi) ekleme.
@@ -36,6 +40,8 @@ def get_data_agent():
            - Enerji: 1 MWh = 1,000 kWh | 1 GWh = 1,000,000 kWh
            - Emisyon: 1 ton = 1,000 kg | 1 kton = 1,000 ton
            - Su: 1 m³ = 1,000 litre
+        5. **KAYNAK BELİRT:** Cevabında hangi tabloda/sütunda bulduğunu belirt ve MUTLAKA dosya adını ekle.
+           Format: "... (Kaynak: {file_name}, [Tablo Adı])"
 
         VERİLER (HTML FORMATINDA):
         {html_context}
@@ -47,6 +53,7 @@ def get_data_agent():
 
     def run_agent(question):
         return chain.invoke({
+            "file_name": file_name,  # Dosya adını ekle
             "html_context": full_context,
             "input": question
         })

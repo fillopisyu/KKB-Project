@@ -178,8 +178,21 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
     doc_res = "Doküman Yok"
     if doc_agent:
         try:
-            doc_res = doc_agent.invoke({"messages": [HumanMessage(content=q_txt)]})["messages"][-1].content
+            result = doc_agent.invoke({"messages": [HumanMessage(content=q_txt)]})
+            # Check if result is valid
+            if result and "messages" in result and len(result["messages"]) > 0:
+                doc_res = result["messages"][-1].content
+                # Validate content is not empty
+                if not doc_res or doc_res.strip() == "":
+                    logger.warning(f"Q{q_id}: Doc agent returned empty content")
+                    doc_res = "Doküman Yok"
+            else:
+                logger.warning(f"Q{q_id}: Doc agent returned invalid structure")
+                doc_res = "Doküman Yok"
             logger.info(f"Q{q_id}: Doc agent response length: {len(doc_res)}")
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.debug(f"Q{q_id}: Doc agent returned empty response (expected for some questions)")
+            doc_res = "Doküman Yok"
         except Exception as e:
             logger.warning(f"Q{q_id}: Doc agent error: {e}")
             doc_res = "Doküman Yok"
@@ -216,6 +229,11 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
     - Doküman: {doc_res}
     - Web: {web_res}
     
+    🚨 KRİTİK KAYNAK KURALI:
+    Yukarıdaki "ANALİZ VERİLERİ" bölümünde [Kaynak: ...] formatında belirtilen dosya isimleri var.
+    Reference alanında SADECE bu dosya isimlerini kullan. ASLA kendi başına dosya adı uydurma!
+    Eğer kaynak bilgisi yoksa, "Kaynak Belirtilmemiş" yaz.
+    
     ÖNEMLİ KURALLAR:
     1. MATEMATİKSEL İŞLEMLER: Eğer hesaplama gerekiyorsa (toplama, çarpma, birim dönüşümü), 
        hesaplama adımlarını açıkça göster. Örnek: "24 MWh × 1000 = 24,000 kWh"
@@ -236,7 +254,7 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
       "evidence": {{
         "answer": "Nihai cevap değeri. Örnek: '24,000 kWh' veya 'Evet, politika mevcut'",
         "proof": "DETAYLI TÜRKÇE AÇIKLAMA: Cevabın nasıl bulunduğunu, hesaplama varsa adım adım göster, hangi verilerin kullanıldığını açıkla. Minimum 2-3 cümle. Örnek: 'Sürdürülebilirlik Raporu'nda 2023 yılı için 24 MWh enerji tüketimi belirtilmiştir. Sorunun istediği birim kWh olduğu için dönüşüm yapıldı: 24 MWh × 1000 = 24,000 kWh. Bu değer şirketin toplam elektrik tüketimini göstermektedir.'",
-        "reference": "DOSYA ADI ZORUNLU! Format: 'Kaynak: [DOSYA ADI], Sayfa [X], [Tablo/Bölüm]'. Önce mutlaka dosya adını belirt (örn: 'Sürdürülebilirlik Raporu 2023.pdf' veya 'Veri.xlsx'), sonra sayfa/tablo. Sadece 'Excel' veya 'Tablo' yazmak YANLIŞ - dosya adı gerekli. Örnek: 'Kaynak: Akbank_2023_Rapor.pdf, Sayfa 34, Enerji Tablosu'"
+        "reference": "SADECE VERİLEN DOSYA İSİMLERİNİ KULLAN! Yukarıdaki ANALİZ VERİLERİ bölümünde [Kaynak: dosya.pdf] formatında dosya isimleri var. Reference'ta bu isimleri AYNEN kullan, asla kendin uydurma. Eğer kaynak bilgisi yoksa 'Kaynak Belirtilmemiş' yaz. Format: 'Kaynak: [VERİLEN_DOSYA_ADI], Sayfa [X]'"
       }}
     }}
     
@@ -481,6 +499,9 @@ with tab1:
                 """)
             else:
                 st.success("Analiz Tamamlandı! Lütfen cevapları kontrol ediniz.")
+            
+            # RERUN to refresh form with new values
+            st.rerun()
 
 
     # FORM RENDER (Google Forms Style)
