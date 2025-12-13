@@ -1,0 +1,24 @@
+🌍 RAG Web Scraper (CACHE) başlıyor... Hedef: 1 URL
+Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+   📂 ChromaDB bağlantısı kuruldu (web_content @ C:\Users\ismsa\Downloads\finsage-devism - Kopya (1)\finsage-devism - Kopya\data\chroma_db)
+   ↳ İşleniyor: https://example.com/
+   📥 Cache MISS! https://example.com/ ilk kez scraping...
+📰 Scraping: https://example.com/
+   ✅ 186 karakter alındı
+   📦 Chunk'lanıyor...
+   ✅ 1 chunk oluşturuldu
+   💾 Embedding + Cache'e ekleniyor...
+HTTP Request: POST https://mia.csp.kloudeks.com/v1/embeddings "HTTP/1.1 200 OK"
+   ✅ https://example.com/ cache'e eklendi (KALICI)
+   🔍 Soruyla ilgili chunk'lar aranıyor...
+HTTP Request: POST https://mia.csp.kloudeks.com/v1/embeddings "HTTP/1.1 200 OK"
+   ✅ 1 alakalı chunk bulundu
+✅ Toplam 222 karakter alakalı içerik (RAG + CACHE)
+🌍 RAG Web Scraper (CACHE) başlıyor... Hedef: 1 URL
+   📂 ChromaDB bağlantısı kuruldu (web_content @ C:\Users\ismsa\Downloads\finsage-devism - Kopya (1)\finsage-devism - Kopya\data\chroma_db)
+   ↳ İşleniyor: https://example.com/
+   ✅ Cache HIT! https://example.com/ zaten embed edilmiş
+   🔍 Soruyla ilgili chunk'lar aranıyor...
+HTTP Request: POST https://mia.csp.kloudeks.com/v1/embeddings "HTTP/1.1 200 OK"
+   ✅ 1 alakalı chunk bulundu
+✅ Toplam 222 karakter alakalı içerik (RAG + CACHE)

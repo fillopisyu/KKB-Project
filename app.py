@@ -253,8 +253,10 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
     - Web: {web_res}
     
     🚨 KRİTİK KAYNAK KURALI:
-    Yukarıdaki "ANALİZ VERİLERİ" bölümünde [Kaynak: ...] formatında belirtilen dosya isimleri var.
-    Reference alanında SADECE bu dosya isimlerini kullan. ASLA kendi başına dosya adı uydurma!
+    - Excel/Data'da [Kaynak: dosya_adi.xlsx] varsa → Reference: "dosya_adi.xlsx"
+    - Doküman'da [Kaynak: dosya_adi.pdf] varsa → Reference: "dosya_adi.pdf"  
+    - Web'de [Kaynak: https://...] varsa → Reference: "https://..." (tam URL)
+    ASLA kendi başına dosya adı veya URL uydurma!
     Eğer kaynak bilgisi yoksa, "Kaynak Belirtilmemiş" yaz.
     
     ÖNEMLİ KURALLAR:
@@ -282,6 +284,11 @@ def solve_question_autofill(question_obj, manual_urls=None, use_crawl=True, craw
     }}
     
     KANIT (evidence) YAPISI ÖRNEKLERİ:
+    
+    **REFERENCE FORMAT:**
+    - PDF dosyası: "Sürdürülebilirlik_Raporu_2023.pdf, Sayfa 45"
+    - Excel dosyası: "veri.xlsx, Tablo: Sheet1"
+    - Web URL: "https://www.webtekno.com/makale"
     
     Örnek 1 - Matematiksel İşlem:
     {{

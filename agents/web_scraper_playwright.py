@@ -112,7 +112,8 @@ def get_web_scraper_agent():
             content = scrape_with_playwright(url)
             
             if content and not content.startswith("HATA") and not content.startswith("UYARI"):
-                all_content.append(f"\n\n=== {url} ===\n{content}\n")
+                # Kaynak formatını diğer ajanlarla tutarlı hale getir
+                all_content.append(f"\n\n[Kaynak: {url}]\n{content}\n")
             else:
                 logger.warning(f"   ⚠️ {url}: İçerik alınamadı")
         

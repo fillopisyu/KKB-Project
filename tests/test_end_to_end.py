@@ -58,6 +58,16 @@ try:
     print(f"\n4️⃣ Content alındı: {len(web_content)} karakter MARKDOWN")
     print(f"   İlk 200 karakter: {web_content[:200]}")
     
+    # İçeriği dosyaya kaydet
+    output_file = "tests/web_content_output.txt"
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(f"URL: {TEST_URL}\n")
+        f.write(f"Soru: {TEST_QUESTION}\n")
+        f.write(f"Uzunluk: {len(web_content)} karakter\n")
+        f.write("="*60 + "\n")
+        f.write(web_content)
+    print(f"   📁 İçerik kaydedildi: {output_file}")
+    
     # 5. LLM'E TÜM MARKDOWN VER, CEVAP AL
     print("\n5️⃣ LLM'e TÜM markdown veriliyor...")
     from core.config import llm_reasoning
