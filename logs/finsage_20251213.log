@@ -429,3 +429,66 @@ For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/erro
 2025-12-13 18:06:00 - finsage - INFO - LLM Confidence: 0/100 (< 60) → TRIGGER web scraper | Reason: No reason provided
 2025-12-13 18:06:00 - finsage - INFO - Qq6: Web scraper suggested but no URLs available, skipping
 2025-12-13 18:06:06 - finsage - INFO - Qq6: Analysis complete - Confidence: 95%, Time: 105.82s
+2025-12-13 18:17:49 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 18:17:49 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 18:17:49 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 18:17:49 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 18:17:49 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 18:17:49 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 18:17:53 - finsage - INFO - Qq1: Data agent response length: 35
+2025-12-13 18:17:54 - finsage - INFO - Qq5: Data agent response length: 38
+2025-12-13 18:18:00 - finsage - INFO - Qq4: Data agent response length: 356
+2025-12-13 18:18:04 - finsage - INFO - Qq2: Data agent response length: 319
+2025-12-13 18:18:08 - finsage - INFO - Qq4: Doc agent response length: 388
+2025-12-13 18:18:16 - finsage - INFO - LLM Confidence: 0/100 (< 60) → TRIGGER web scraper | Reason: No reason provided
+2025-12-13 18:18:16 - finsage - INFO - Qq4: Web scraper suggested but no URLs available, skipping
+2025-12-13 18:18:17 - finsage - INFO - Qq1: Doc agent response length: 1329
+2025-12-13 18:18:19 - finsage - INFO - Qq2: Doc agent response length: 147
+2025-12-13 18:18:20 - finsage - INFO - Qq3: Data agent response length: 750
+2025-12-13 18:18:23 - finsage - INFO - LLM Confidence: 94/100 (>= 60) → SKIP web scraper | Reason: Cevap soruya net ve doğrudan "evet" diyor, insan hakları ve çocuk işçi politikalarının varlığını belgelerle (akbank-2023 entegre faaliyet raporu, sayfa 65, 193, 210‑213) destekliyor. Kaynak resmi ve sayfa referansları mevcut, tutarlı ve soruyla uyumlu, bu yüzden yüksek güven puanı verildi.
+2025-12-13 18:18:24 - finsage - INFO - Qq4: Analysis complete - Confidence: 98%, Time: 35.35s
+2025-12-13 18:18:24 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 18:18:25 - finsage - INFO - LLM Confidence: 95/100 (>= 60) → SKIP web scraper | Reason: Cevaplar aynı değeri (11 932 tCO₂e) veriyor, kaynaklar sayfa numarası ve dosya adıyla net belirtilmiş, birim ve değer soruya tam uyuyor; yıl belirtilmemiş olsa da en güncel değer olarak anlaşılması mantıklı, çelişki yok.
+2025-12-13 18:18:32 - finsage - INFO - Qq1: Analysis complete - Confidence: 96%, Time: 42.55s
+2025-12-13 18:18:32 - finsage - INFO - Qq2: Analysis complete - Confidence: 100%, Time: 43.20s
+2025-12-13 18:18:40 - finsage - INFO - Qq5: Doc agent response length: 365
+2025-12-13 18:18:48 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Soruya doğrudan ve eksiksiz bir cevap verilmiş; listelenen malzemeler sorunun gereksinimini karşılıyor. Kaynak (Akbank 2023 Entegre Faaliyet Raporu, Sayfa 130) belirtilmiş, bu da bilgi güvenilirliğini destekliyor. Küçük bir belirsizlik olasılığı dışında, cevap yüksek güven seviyesinde.
+2025-12-13 18:18:50 - finsage - INFO - Qq6: Data agent response length: 599
+2025-12-13 18:18:56 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 67.46s
+2025-12-13 18:19:59 - finsage - INFO - Qq3: Doc agent response length: 24
+2025-12-13 18:20:03 - finsage - INFO - LLM Confidence: 85/100 (>= 60) → SKIP web scraper | Reason: Cevap, yıllara göre toplam çalışan ve engelli çalışan sayılarını ve yüzde değerlerini net bir şekilde sunuyor; ayrıca 5 yıllık ortalama yüzde de veriliyor. Kaynak tablo belirtilmiş ancak sayfa/sekme detayları eksik, bu yüzden %90‑100 aralığının altında ama hâlâ güçlü bir veri seti olduğundan orta‑yüksek bir güven skoru verildi.
+2025-12-13 18:20:08 - finsage - INFO - LLM Confidence: 78/100 (>= 60) → SKIP web scraper | Reason: Cevap soruya doğrudan yıllık kWh değerlerini veriyor ve dönüşüm yöntemi açık. Kaynak isimli bir veri seti ve tablo referansı belirtilmiş, ancak sayfa/sekme gibi detaylar eksik ve verinin doğruluğu bağımsız olarak doğrulanamıyor. Bu nedenle yüksek ama tam güvenli bir skor verilemiyor.
+2025-12-13 18:20:12 - finsage - INFO - Qq6: Analysis complete - Confidence: 100%, Time: 107.31s
+2025-12-13 18:20:15 - finsage - INFO - Qq3: Analysis complete - Confidence: 96%, Time: 145.96s
+2025-12-13 18:31:07 - finsage - INFO - Starting autofill for 6 questions
+2025-12-13 18:31:07 - finsage - INFO - Qq1: Starting analysis - Type: singleChoice
+2025-12-13 18:31:07 - finsage - INFO - Qq2: Starting analysis - Type: numeric
+2025-12-13 18:31:07 - finsage - INFO - Qq3: Starting analysis - Type: numeric
+2025-12-13 18:31:07 - finsage - INFO - Qq4: Starting analysis - Type: singleChoice
+2025-12-13 18:31:07 - finsage - INFO - Qq5: Starting analysis - Type: multiChoice
+2025-12-13 18:31:13 - finsage - INFO - Qq1: Data agent response length: 80
+2025-12-13 18:31:15 - finsage - INFO - Qq5: Data agent response length: 35
+2025-12-13 18:31:18 - finsage - INFO - Qq4: Data agent response length: 360
+2025-12-13 18:31:21 - finsage - INFO - Qq2: Data agent response length: 314
+2025-12-13 18:31:27 - finsage - INFO - Qq3: Data agent response length: 377
+2025-12-13 18:31:32 - finsage - INFO - Qq4: Doc agent response length: 556
+2025-12-13 18:31:36 - finsage - INFO - Qq1: Doc agent response length: 716
+2025-12-13 18:31:38 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Her iki yanıt da soruya net “Evet” cevabı veriyor, ayrıntılı açıklamalar ve sayfa numarası ya da tablo referansı gibi güvenilir kaynaklar sunuyor. Bilgiler tutarlı ve soruyla doğrudan ilgili, bu yüzden yüksek güven derecesi verildi.
+2025-12-13 18:31:42 - finsage - INFO - LLM Confidence: 93/100 (>= 60) → SKIP web scraper | Reason: Soruya net ‘evet’ cevabı verilmiş, hem İnsan Hakları hem de Çocuk İşçi politikalarının varlığı belirtilmiş ve ilgili sayfa numaraları (65, 193‑213) ile 2023 yılına ait Akbank entegre faaliyet raporu kaynakları gösterilmiş. Kaynaklar anlaşılır ve resmi rapor olduğu için güvenilir. Veri ajanının “veri setinde yok” demesi ek bir çelişki yaratmıyor; belge temelli bilgi mevcut olduğundan yüksek güven verilir.
+2025-12-13 18:31:43 - finsage - INFO - Qq2: Doc agent response length: 147
+2025-12-13 18:31:51 - finsage - INFO - Qq4: Analysis complete - Confidence: 98%, Time: 44.22s
+2025-12-13 18:31:51 - finsage - INFO - Qq6: Starting analysis - Type: numeric
+2025-12-13 18:31:52 - finsage - INFO - Qq1: Analysis complete - Confidence: 95%, Time: 45.46s
+2025-12-13 18:31:52 - finsage - INFO - LLM Confidence: 92/100 (>= 60) → SKIP web scraper | Reason: Her iki cevap da 2023 yılına ait toplam Kapsam 1 (doğrudan) emisyonunu net bir şekilde 11,932 tCO₂e olarak veriyor. Kaynaklar (akbank‑2023‑entegre‑faaliyet‑raporu, Sayfa 129 ve Akbank_ÇYS Veri Seti‑2023) sayfa/tablolarla belirtilmiş; birim ve değer soru ile tam uyumlu. Küçük bir belirsizlik, sorunun sadece bir yıl mı yoksa tüm dönem mi istediği net olmaması, bu nedenle yüksek ama %100 olmayan bir skor verildi.
+2025-12-13 18:31:57 - finsage - INFO - Qq5: Doc agent response length: 328
+2025-12-13 18:32:02 - finsage - INFO - LLM Confidence: 94/100 (>= 60) → SKIP web scraper | Reason: Soruya doğrudan yanıt verilmiş; ayrıştırılan malzemeler açıkça listelenmiş. Kaynak olarak bir yıllık rapor ve sayfa numarası belirtilmiş, bu da bilgiyi doğrulanabilir kılıyor. Dolayısıyla yüksek güven seviyesi verilir.
+2025-12-13 18:32:02 - finsage - INFO - Qq2: Analysis complete - Confidence: 98%, Time: 55.64s
+2025-12-13 18:32:14 - finsage - INFO - Qq6: Data agent response length: 515
+2025-12-13 18:32:19 - finsage - INFO - Qq5: Analysis complete - Confidence: 95%, Time: 72.11s
+2025-12-13 18:33:38 - finsage - INFO - Qq3: Doc agent response length: 24
+2025-12-13 18:33:48 - finsage - INFO - LLM Confidence: 78/100 (>= 60) → SKIP web scraper | Reason: Sayı net ve doğru birim dönüşümüyle verildi, güvenilir bir veri seti kaynağı belirtilmiş. Ancak kaynağın sadece "Elektrik tüketimleri" satırını içermesi, sahip olunan ve kiralanan yerler için ayrı bir dağılım gösterip göstermediği net değil; bu yüzden yüzde 100 güven yok.
+2025-12-13 18:34:01 - finsage - INFO - Qq3: Analysis complete - Confidence: 95%, Time: 174.65s
+2025-12-13 18:35:37 - finsage - INFO - Qq6: Doc agent response length: 605
+2025-12-13 18:35:45 - finsage - INFO - LLM Confidence: 0/100 (< 60) → TRIGGER web scraper | Reason: No reason provided
+2025-12-13 18:35:45 - finsage - INFO - Qq6: Web scraper suggested but no URLs available, skipping
+2025-12-13 18:35:51 - finsage - INFO - Qq6: Analysis complete - Confidence: 95%, Time: 239.98s

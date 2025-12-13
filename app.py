@@ -445,14 +445,19 @@ with tab1:
                         ai_res = future.result(timeout=AppConfig.AGENT_TIMEOUT_SECONDS)
                         # STATE'E KAYDET - Handle both old and new evidence formats
                         evidence_data = ai_res.get("evidence", ai_res.get("evidence_summary", {}))
-                        st.session_state.form_data[qid] = {
-                            "value": ai_res.get("suggested_value"),
+                        # QID'yi string olarak kaydet (tutarlılık için)
+                        qid_str = str(qid)
+                        st.session_state.form_data[qid_str] = {
+                            "value": ai_res.get("suggested_value", ""),
                             "selected_id": ai_res.get("selected_id"),
                             "selected_ids": ai_res.get("selected_ids", []),
                             "confidence": ai_res.get("confidence_score"),
                             "evidence": evidence_data,  # Can be dict or string
                             "elapsed_time": ai_res.get("elapsed_time", 0)
                         }
+                        # DEBUG: Kayıt edildiğini doğrula
+                        saved_val = st.session_state.form_data[qid_str].get("value", "")
+                        logger.info(f"Q{qid}: Saved to form_data - value='{str(saved_val)[:30]}', conf={ai_res.get('confidence_score')}%")
                     except concurrent.futures.TimeoutError:
                         logger.error(f"Q{qid}: Timeout after {AppConfig.AGENT_TIMEOUT_SECONDS}s")
                         st.session_state.form_data[qid] = {
@@ -498,9 +503,9 @@ with tab1:
                 - En Hızlı: {min_str} | En Yavaş: {max_str}
                 """)
             else:
-                st.success("Analiz Tamamlandı! Lütfen cevapları kontrol ediniz.")
+                st.success("✅ Analiz Tamamlandı! Form dolduruluyor...")
             
-            # RERUN to refresh form with new values
+            # Immediately rerun to show filled form
             st.rerun()
 
 
@@ -513,9 +518,10 @@ with tab1:
                 label = f"{qid}. {q['questionDescription']}"
                 qtype = q["questionType"]
                 
-                # Get current AI value
-                ai_data = st.session_state.form_data.get(qid, {})
-                current_val = ai_data.get("value", "")
+                # Get current AI value - QID'yi string olarak al
+                qid_str = str(qid)
+                ai_data = st.session_state.form_data.get(qid_str, {})
+                current_val = ai_data.get("value", "") or ""  # None'ı boş string'e çevir
                 confidence = ai_data.get("confidence", 0)
                 evidence = ai_data.get("evidence", "")
                 sel_id = ai_data.get("selected_id", None)
@@ -593,7 +599,10 @@ with tab1:
                     st.multiselect("Seçimleriniz:", opt_labels, default=default_selections, key=f"wdg_{qid}")
                 
                 else: # openText, numeric
-                    st.text_area("Yanıt:", value=str(current_val), key=f"wdg_{qid}")
+                    # Debug: Form değerini logla
+                    text_value = str(current_val) if current_val else ""
+                    print(f"DEBUG Q{qid}: text_area value = '{text_value[:50]}...' from form_data")
+                    st.text_area("Yanıt:", value=text_value, key=f"wdg_{qid}")
                 
                 # AI KANIT KUTUSU
                 if evidence:
