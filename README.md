@@ -1,157 +1,157 @@
 # FinSage 🏢
 
-> **AI-Powered ESG Form Autofill System** - Intelligent multi-source data extraction and form automation using advanced agentic architecture
+> **Yapay Zeka Destekli ESG Form Oto-Doldurma Sistemi** - Gelişmiş agentic mimari kullanarak çoklu kaynaktan akıllı veri çıkarımı ve form otomasyonu
 
-FinSage is an advanced AI system that automatically fills sustainability and ESG questionnaires by extracting information from multiple data sources: Excel/CSV data, PDF reports, and web pages. Built with a sophisticated multi-agent architecture featuring parallel processing, intelligent routing, and persistent caching for maximum performance and accuracy.
-
----
-
-## ✨ Key Features
-
-### 🤖 Multi-Agent Architecture
-- **Data Agent**: Analyzes structured data (Excel, CSV) with intelligent unit conversion
-- **Document Agent**: Extracts information from PDFs using RAG (Retrieval Augmented Generation)
-- **Web Scraper Agent**: Fetches and analyzes web content with ChromaDB-based persistent caching
-- **Evaluator Agent**: Calculates confidence scores based on source quality and data completeness
-
-### ⚡ High Performance
-- **Parallel Processing**: Process multiple questions simultaneously with ThreadPoolExecutor (5 workers)
-- **Smart Caching**: ChromaDB-based persistent cache for web content (~10x speedup on repeated queries)
-- **Real-time Metrics**: Track processing time, per-question statistics, and parallel speedup gains
-- **Async Operations**: Non-blocking UI with live progress indicators
-
-### 🎨 Premium UI
-- **Dark Theme**: Beautiful KKB-branded dark mode interface with glassmorphism
-- **Live Progress**: Real-time progress bars and status updates during analysis
-- **Performance Dashboard**: Detailed timing statistics and speedup metrics after completion
-- **Evidence Display**: Show AI confidence, sources, evidence text, and page numbers for full transparency
-
-### 🔍 Intelligent Features
-- **LLM-Based Source Detection**: Automatic file type detection and routing strategy
-- **Automatic Unit Conversion**: Smart conversion (MWh→kWh, ton→kg, m³→litre, GJ→kWh)
-- **Multi-Choice Support**: Handle single-choice, multi-choice, and open text questions
-- **Source Attribution**: Always cite sources with file names and page numbers
-- **Fallback Mechanisms**: Multi-tier search with web fallback when local data is insufficient
+FinSage, sürdürülebilirlik ve ESG anketlerini otomatik olarak dolduran gelişmiş bir yapay zeka sistemidir. Excel/CSV verileri, PDF raporları ve web sayfaları gibi birden fazla kaynaktan bilgi çıkarır. Paralel işleme ve yüksek doğruluk için çoklu ajan mimarisi ile inşa edilmiştir.
 
 ---
 
-## 📁 Modular Code Structure
+## ✨ Öne Çıkan Özellikler
 
-The project follows a clean, modular architecture with clear separation of concerns:
+### 🤖 Çoklu Ajan Mimarisi
+- **Veri Ajanı**: Yapılandırılmış verileri (Excel, CSV) akıllı birim dönüşümü ile analiz eder
+- **Doküman Ajanı**: RAG (Retrieval Augmented Generation) kullanarak PDF'lerden bilgi çıkarır
+- **Web Tarayıcı Ajanı**: ChromaDB tabanlı kalıcı önbellekleme ile web içeriği getirir ve analiz eder
+- **Değerlendirici Ajan**: Kaynak kalitesi ve veri tamlığına dayalı güven skoru hesaplar
+
+### ⚡ Yüksek Performans
+- **Paralel İşleme**: ThreadPoolExecutor ile aynı anda birden fazla soruyu işler (5 worker)
+- **Akıllı Önbellekleme**: Web içeriği için ChromaDB tabanlı kalıcı önbellek (~10x hızlanma)
+- **Gerçek Zamanlı Metrikler**: İşleme süresi, soru başına istatistikler ve paralel kazançları takip eder
+- **Asenkron Operasyonlar**: Canlı ilerleme göstergeleri ile bloke olmayan arayüz
+
+### 🎨 Premium Arayüz
+- **Koyu Tema**: Glassmorphism ile güzel KKB markalı koyu mod arayüzü
+- **Canlı İlerleme**: Analiz sırasında gerçek zamanlı ilerleme çubukları ve durum güncellemeleri
+- **Performans Panosu**: Tamamlandıktan sonra detaylı zamanlama istatistikleri ve hızlanma metrikleri
+- **Kanıt Gösterimi**: Tam şeffaflık için AI güveni, kaynaklar, kanıt metni ve sayfa numaraları gösterir
+
+### 🔍 Akıllı Özellikler
+- **LLM Tabanlı Kaynak Tespiti**: Otomatik dosya tipi tespiti ve yönlendirme stratejisi
+- **Otomatik Birim Dönüşümü**: Akıllı dönüşüm (MWh→kWh, ton→kg, m³→litre, GJ→kWh)
+- **Çoklu Seçim Desteği**: Tek seçimli, çoklu seçimli ve açık metin sorularını işler
+- **Kaynak Atıfları**: Her zaman dosya adları ve sayfa numaraları ile kaynakları gösterir
+- **Yedek Mekanizmalar**: Yerel veri yetersiz olduğunda web yedekli çok katmanlı arama
+
+---
+
+## 📁 Modüler Kod Yapısı
+
+Proje, net sorumluluk ayrımı ile temiz, modüler bir mimari takip eder:
 
 ```
 finsage/
-├── app.py                          # Main Streamlit application & orchestration
-├── main.py                         # CLI entry point (alternative to Streamlit)
+├── app.py                          # Ana Streamlit uygulaması ve orkestrasyon
+├── main.py                         # CLI giriş noktası (Streamlit alternatifi)
 │
-├── agents/                         # 🤖 Specialized AI Agents
+├── agents/                         # 🤖 Uzmanlaşmış Yapay Zeka Ajanları
 │   ├── __init__.py
-│   ├── data_agent.py              # Excel/CSV structured data analyzer
-│   ├── doc_agent.py               # PDF document RAG agent (LangChain)
-│   ├── web_scraper.py             # Web scraping with Firecrawl + ChromaDB cache
-│   ├── web_scraper_bs4.py         # BeautifulSoup4 fallback scraper
-│   ├── web_scraper_playwright.py  # Playwright fallback scraper
-│   ├── web_scraper_trafilatura.py # Trafilatura fallback scraper
-│   └── evaluator.py               # Answer confidence evaluation logic
+│   ├── data_agent.py              # Excel/CSV yapılandırılmış veri analizcisi
+│   ├── doc_agent.py               # PDF doküman RAG ajanı (LangChain)
+│   ├── web_scraper.py             # Firecrawl + ChromaDB önbellek ile web tarama
+│   ├── web_scraper_bs4.py         # BeautifulSoup4 yedek tarayıcı
+│   ├── web_scraper_playwright.py  # Playwright yedek tarayıcı
+│   ├── web_scraper_trafilatura.py # Trafilatura yedek tarayıcı
+│   └── evaluator.py               # Cevap güven değerlendirme mantığı
 │
-├── core/                          # ⚙️ Core Configuration & Utilities
+├── core/                          # ⚙️ Çekirdek Konfigürasyon ve Yardımcılar
 │   ├── __init__.py
-│   ├── config.py                  # LLM, embedding models, and app settings
-│   ├── logger.py                  # Centralized logging setup
-│   └── unit_converter.py          # Unit conversion logic and validation
+│   ├── config.py                  # LLM, embedding modelleri ve uygulama ayarları
+│   ├── logger.py                  # Merkezi loglama kurulumu
+│   └── unit_converter.py          # Birim dönüşüm mantığı ve doğrulama
 │
-├── ingestion/                     # 📥 Data Ingestion Pipeline
+├── ingestion/                     # 📥 Veri Alım Pipeline'ı
 │   ├── __init__.py
-│   └── processor.py               # LLM-based file routing & storage
+│   └── processor.py               # LLM tabanlı dosya yönlendirme ve depolama
 │
-├── utils/                         # 🛠️ Helper Functions
+├── utils/                         # 🛠️ Yardımcı Fonksiyonlar
 │   ├── __init__.py
-│   ├── validators.py              # Input validation and sanitization
-│   └── math_tool.py               # Mathematical operations for agents
+│   ├── validators.py              # Girdi doğrulama ve temizleme
+│   └── math_tool.py               # Ajanlar için matematiksel işlemler
 │
-├── data/                          # 📂 Data Storage
-│   └── chroma_db/                 # ChromaDB vector database (PDFs + web cache)
+├── data/                          # 📂 Veri Depolama
+│   └── chroma_db/                 # ChromaDB vektör veritabanı (PDF + web önbellek)
 │
-├── logs/                          # 📝 Application Logs
+├── logs/                          # 📝 Uygulama Logları
 │   └── finsage_YYYYMMDD.log
 │
-├── tests/                         # 🧪 Test Files
-│   └── ...                        # Various test scripts and outputs
+├── tests/                         # 🧪 Test Dosyaları
+│   └── ...                        # Çeşitli test scriptleri ve çıktıları
 │
-├── requirements.txt               # Python dependencies
-├── .env                          # Environment variables (API keys)
-└── README.md                     # This file
+├── requirements.txt               # Python bağımlılıkları
+├── .env                          # Ortam değişkenleri (API anahtarları)
+└── README.md                     # Bu dosya
 ```
 
-### Module Responsibilities
+### Modül Sorumlulukları
 
-#### **`app.py`** - Main Application
-- Streamlit UI initialization and layout
-- File upload and URL management
-- Question set loading (JSON)
-- Parallel question processing orchestration
-- Performance metrics tracking
-- Answer synthesis and display
-- Form submission and export
+#### **`app.py`** - Ana Uygulama
+- Streamlit UI başlatma ve düzen
+- Dosya yükleme ve URL yönetimi
+- Soru seti yükleme (JSON)
+- Paralel soru işleme orkestrasyonu
+- Performans metrik takibi
+- Cevap sentezi ve gösterimi
+- Form gönderimi ve dışa aktarma
 
-#### **`agents/`** - Specialized AI Agents
-Each agent is designed with a specific data source in mind:
+#### **`agents/`** - Uzmanlaşmış AI Ajanları
+Her ajan belirli bir veri kaynağı için tasarlanmıştır:
 
-- **`data_agent.py`**: Reads structured data (Excel/CSV) stored as HTML tables in RAM
-- **`doc_agent.py`**: RAG-based PDF document search using ChromaDB vector store
-- **`web_scraper.py`**: Web content extraction with Firecrawl API and persistent caching
-- **`evaluator.py`**: Rule-based confidence scoring (0-100) based on source quality
+- **`data_agent.py`**: RAM'de HTML tabloları olarak saklanan yapılandırılmış verileri okur
+- **`doc_agent.py`**: ChromaDB vektör deposu kullanarak RAG tabanlı PDF doküman araması
+- **`web_scraper.py`**: Firecrawl API ve kalıcı önbellekleme ile web içerik çıkarımı
+- **`evaluator.py`**: Kaynak kalitesine dayalı kural tabanlı güven skorlaması (0-100)
 
-#### **`ingestion/processor.py`** - Intelligent File Router
-- **LLM-based decision making**: Analyzes file snippets to determine optimal processing strategy
-- Routes files to: `STRUCTURED` (RAM), `VECTOR` (ChromaDB), or `URL_LIST` (web links)
-- Prevents duplicate processing with source tracking
-- Handles PDF, DOCX, Excel, CSV, and text files
+#### **`ingestion/processor.py`** - Akıllı Dosya Yönlendirici
+- **LLM tabanlı karar verme**: Optimal işleme stratejisini belirlemek için dosya parçalarını analiz eder
+- Dosyaları şuraya yönlendirir: `STRUCTURED` (RAM), `VECTOR` (ChromaDB), veya `URL_LIST` (web linkleri)
+- Kaynak takibi ile tekrarlayan işlemleri önler
+- PDF, DOCX, Excel, CSV ve metin dosyalarını işler
 
-#### **`core/`** - Configuration Layer
-- **`config.py`**: Centralized LLM settings (KLOUDEKS/OpenAI), embedding models, paths
-- **`logger.py`**: Structured logging with file rotation
-- **`unit_converter.py`**: Energy, emission, volume, and mass unit conversions
+#### **`core/`** - Konfigürasyon Katmanı
+- **`config.py`**: Merkezi LLM ayarları (KLOUDEKS/OpenAI), embedding modelleri, yollar
+- **`logger.py`**: Dosya rotasyonu ile yapılandırılmış loglama
+- **`unit_converter.py`**: Enerji, emisyon, hacim ve kütle birim dönüşümleri
 
 ---
 
-## 🏗️ Overall System Architecture
+## 🏗️ Genel Sistem Mimarisi
 
-### High-Level System Design
+### Üst Seviye Sistem Tasarımı
 
 ```mermaid
 graph TB
-    subgraph "User Interface"
-        UI[Streamlit UI<br/>Dark Theme]
-        UPLOAD[File Upload]
-        URLS[Manual URLs]
-        JSON[Question Set JSON]
+    subgraph "Kullanici Arayuzu"
+        UI[Streamlit UI - Koyu Tema]
+        UPLOAD[Dosya Yukleme]
+        URLS[Manuel URLler]
+        JSON[Soru Seti JSON]
     end
     
-    subgraph "Ingestion Layer"
-        ROUTER[LLM-based Router<br/>processor.py]
-        ROUTER -->|STRUCTURED| RAM[(RAM Store<br/>HTML Tables)]
-        ROUTER -->|VECTOR| VECT[(ChromaDB<br/>Vector Store)]
-        ROUTER -->|URL_LIST| URLS_STORE[(URL Store<br/>List)]
+    subgraph "Alim Katmani"
+        ROUTER[LLM Tabanli Router - processor.py]
+        ROUTER -->|STRUCTURED| RAM[(RAM Depo - HTML Tablolar)]
+        ROUTER -->|VECTOR| VECT[(ChromaDB - Vektor Depo)]
+        ROUTER -->|URL_LIST| URLS_STORE[(URL Depo - Liste)]
     end
     
-    subgraph "Agent Layer"
-        DATA[Data Agent<br/>Excel/CSV]
-        DOC[Doc Agent<br/>PDF RAG]
-        WEB[Web Scraper<br/>Firecrawl + Cache]
+    subgraph "Ajan Katmani"
+        DATA[Veri Ajani - Excel/CSV]
+        DOC[Dokuman Ajani - PDF RAG]
+        WEB[Web Tarayici - Firecrawl Onbellek]
     end
     
-    subgraph "Processing Layer"
-        SYNTH[Answer Synthesizer<br/>Multi-source Merge]
-        CONV[Unit Converter<br/>MWh→kWh, etc.]
-        EVAL[Confidence Evaluator<br/>Rule-based Scoring]
+    subgraph "Isleme Katmani"
+        SYNTH[Cevap Sentezleyici - Coklu Kaynak Birlestirme]
+        CONV[Birim Donusturucu - MWh to kWh vb.]
+        EVAL[Guven Degerlendirici - Kural Tabanli Skorlama]
     end
     
-    subgraph "Storage"
+    subgraph "Depolama"
         RAM
         VECT
         URLS_STORE
-        CACHE[(ChromaDB Web Cache<br/>URL → Embeddings)]
+        CACHE[(ChromaDB Web Onbellek - URL to Embeddings)]
     end
     
     UI --> UPLOAD
@@ -160,7 +160,7 @@ graph TB
     
     UPLOAD --> ROUTER
     URLS --> URLS_STORE
-    JSON --> PARALLEL[Parallel Executor<br/>ThreadPoolExecutor]
+    JSON --> PARALLEL[Paralel Yurutucu - ThreadPoolExecutor]
     
     PARALLEL --> DATA
     PARALLEL --> DOC
@@ -177,7 +177,7 @@ graph TB
     
     SYNTH --> CONV
     CONV --> EVAL
-    EVAL --> RESULT[Final Answer<br/>+ Confidence + Evidence]
+    EVAL --> RESULT[Nihai Cevap - Guven - Kanit]
     
     RESULT --> UI
     
@@ -189,79 +189,79 @@ graph TB
 
 ---
 
-## 🤖 Agentic Architecture: Decision Making & Task Processing
+## 🤖 Agentic Mimari: Karar Verme ve Görev İşleme
 
-### Multi-Agent Coordination Flow
+### Çoklu Ajan Koordinasyon Akışı
 
-The system employs a **hierarchical multi-agent architecture** where each agent specializes in a specific data source. The orchestrator (`solve_question_autofill` function) coordinates all agents and synthesizes their responses.
+Sistem, her ajanın belirli bir veri kaynağında uzmanlaştığı **hiyerarşik çoklu ajan mimarisi** kullanır. Orkestratör (`solve_question_autofill` fonksiyonu) tüm ajanları koordine eder ve yanıtlarını sentezler.
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant Orchestrator
-    participant DataAgent
-    participant DocAgent
-    participant WebAgent
-    participant Synthesizer
-    participant Evaluator
+    participant Kullanici
+    participant Orkestrator
+    participant VeriAjani
+    participant DokümanAjani
+    participant WebAjani
+    participant Sentezleyici
+    participant Degerlendirici
     
-    User->>Orchestrator: Submit Question
+    Kullanici->>Orkestrator: Soru Gonder
     
-    par Parallel Execution
-        Orchestrator->>DataAgent: Query Excel/CSV
-        DataAgent-->>DataAgent: Search HTML Tables
-        DataAgent-->>Orchestrator: Result + Source
+    par Paralel Yurutme
+        Orkestrator->>VeriAjani: Excel/CSV Sorgula
+        VeriAjani-->>VeriAjani: HTML Tablolarda Ara
+        VeriAjani-->>Orkestrator: Sonuc Kaynak
     and
-        Orchestrator->>DocAgent: Query PDFs
-        DocAgent-->>DocAgent: RAG Similarity Search
-        DocAgent-->>DocAgent: Extract Page Numbers
-        DocAgent-->>Orchestrator: Result + Source + Page
+        Orkestrator->>DokümanAjani: PDFleri Sorgula
+        DokümanAjani-->>DokümanAjani: RAG Benzerlik Aramasi
+        DokümanAjani-->>DokümanAjani: Sayfa Numaralari Cikar
+        DokümanAjani-->>Orkestrator: Sonuc Kaynak Sayfa
     and
-        Orchestrator->>WebAgent: Query Web
-        WebAgent-->>WebAgent: Check Cache
-        alt Cache Hit
-            WebAgent-->>WebAgent: Use Cached Embeddings
-        else Cache Miss
-            WebAgent-->>WebAgent: Scrape → Chunk → Embed → Cache
+        Orkestrator->>WebAjani: Web Sorgula
+        WebAjani-->>WebAjani: Onbellegi Kontrol Et
+        alt Onbellek Var
+            WebAjani-->>WebAjani: Onbellekteki Embeddinglari Kullan
+        else Onbellek Yok
+            WebAjani-->>WebAjani: Tara Parca Embed Onbellek
         end
-        WebAgent-->>Orchestrator: Result + URL
+        WebAjani-->>Orkestrator: Sonuc URL
     end
     
-    Orchestrator->>Synthesizer: Merge All Results
-    Synthesizer-->>Synthesizer: Conflict Resolution
-    Synthesizer-->>Synthesizer: Unit Conversion Check
-    Synthesizer->>Evaluator: Calculate Confidence
-    Evaluator-->>Evaluator: Rule-based Scoring
-    Evaluator-->>Orchestrator: Final Answer Package
+    Orkestrator->>Sentezleyici: Tum Sonuclari Birlestir
+    Sentezleyici-->>Sentezleyici: Catisma Cozumu
+    Sentezleyici-->>Sentezleyici: Birim Donusum Kontrolu
+    Sentezleyici->>Degerlendirici: Guven Hesapla
+    Degerlendirici-->>Degerlendirici: Kural Tabanli Skorlama
+    Degerlendirici-->>Orkestrator: Nihai Cevap Paketi
     
-    Orchestrator->>User: Answer + Evidence + Confidence
+    Orkestrator->>Kullanici: Cevap Kanit Guven
 ```
 
-### Agent Decision-Making Process
+### Ajan Karar Verme Süreci
 
-#### 1. **Ingestion Router Decision (LLM-Based)**
+#### 1. **Alım Yönlendirici Kararı (LLM Tabanlı)**
 
-When a file is uploaded, the `processor.py` module uses an LLM to analyze a snippet and decide the processing strategy:
+Bir dosya yüklendiğinde, `processor.py` modülü bir parçayı analiz etmek ve işleme stratejisine karar vermek için LLM kullanır:
 
 ```mermaid
 flowchart TD
-    START[File Uploaded] --> SNIPPET[Extract File Snippet<br/>First 1000 chars]
-    SNIPPET --> LLM{LLM Analyzer<br/>What type of data?}
+    START[Dosya Yuklendi] --> SNIPPET[Dosya Parcasi Cikar - Ilk 1000 karakter]
+    SNIPPET --> LLM{LLM Analizci - Ne Tur Veri?}
     
-    LLM -->|"Structured data<br/>(tables, numbers)"| STRUCTURED[Strategy: STRUCTURED]
-    LLM -->|"Unstructured text<br/>(paragraphs, reports)"| VECTOR[Strategy: VECTOR]
-    LLM -->|"List of URLs"| URLS[Strategy: URL_LIST]
+    LLM -->|Yapilandirilmis veri - tablolar sayilar| STRUCTURED[Strateji: STRUCTURED]
+    LLM -->|Yapilandirilmamis metin - paragraflar raporlar| VECTOR[Strateji: VECTOR]
+    LLM -->|URL listesi| URLS[Strateji: URL_LIST]
     
-    STRUCTURED --> RAM[(Store in RAM<br/>as HTML Tables)]
-    VECTOR --> SPLIT[Chunk Text<br/>RecursiveCharacterTextSplitter]
-    URLS --> URL_STORE[(Store URLs<br/>in List)]
+    STRUCTURED --> RAM[(RAM'de Sakla - HTML Tablo)]
+    VECTOR --> SPLIT[Metni Parca - RecursiveCharacterTextSplitter]
+    URLS --> URL_STORE[(URLleri Sakla - Liste)]
     
-    SPLIT --> EMBED[Generate Embeddings<br/>qwen3-embedding-8b]
-    EMBED --> CHROMA[(Store in ChromaDB<br/>Vector Database)]
+    SPLIT --> EMBED[Embedding Uret - qwen3-embedding-8b]
+    EMBED --> CHROMA[(ChromaDB'de Sakla - Vektor Veritabani)]
     
-    RAM --> READY[Ready for Data Agent]
-    CHROMA --> READY2[Ready for Doc Agent]
-    URL_STORE --> READY3[Ready for Web Agent]
+    RAM --> READY[Veri Ajani icin Hazir]
+    CHROMA --> READY2[Dokuman Ajani icin Hazir]
+    URL_STORE --> READY3[Web Ajani icin Hazir]
     
     style LLM fill:#FF5100,stroke:#fff,stroke-width:2px,color:#fff
     style RAM fill:#059669,stroke:#fff,stroke-width:2px
@@ -269,106 +269,106 @@ flowchart TD
     style URL_STORE fill:#7c3aed,stroke:#fff,stroke-width:2px
 ```
 
-**LLM Prompt (Simplified):**
+**LLM Prompt (Basitleştirilmiş):**
 ```
-You are a file type classifier. Analyze this file snippet and determine:
-- STRUCTURED: If it contains tables, CSV data, or structured numerical data
-- VECTOR: If it contains unstructured text (reports, documents, paragraphs)
-- URL_LIST: If it contains a list of web URLs
+Dosya türü sınıflandırıcısısın. Bu dosya parçasını analiz et ve belirle:
+- STRUCTURED: Tablolar, CSV verisi veya yapılandırılmış sayısal veri içeriyorsa
+- VECTOR: Yapılandırılmamış metin (raporlar, dokümanlar, paragraflar) içeriyorsa
+- URL_LIST: Web URL listesi içeriyorsa
 
-File: {file_name}
-Snippet: {snippet}
+Dosya: {file_name}
+Parça: {snippet}
 
-Output ONLY one word: STRUCTURED, VECTOR, or URL_LIST
+Çıktı: SADECE bir kelime: STRUCTURED, VECTOR, veya URL_LIST
 ```
 
-#### 2. **Question Processing Decision Tree**
+#### 2. **Soru İşleme Karar Ağacı**
 
-For each question, the orchestrator decides which agents to invoke based on data availability:
+Her soru için, orkestratör veri kullanılabilirliğine göre hangi ajanları çağıracağına karar verir:
 
 ```mermaid
 flowchart TD
-    Q[User Question] --> CHECK{Check Available Sources}
+    Q[Kullanici Sorusu] --> CHECK{Mevcut Kaynaklari Kontrol Et}
     
-    CHECK -->|Excel/CSV exists| DATA_CALL[Invoke Data Agent]
-    CHECK -->|PDFs exist| DOC_CALL[Invoke Doc Agent]
-    CHECK -->|URLs exist| WEB_CALL[Invoke Web Agent]
+    CHECK -->|Excel/CSV var| DATA_CALL[Veri Ajani Cagir]
+    CHECK -->|PDF var| DOC_CALL[Dokuman Ajani Cagir]
+    CHECK -->|URL var| WEB_CALL[Web Ajani Cagir]
     
-    DATA_CALL --> DATA_RESULT[Data Result<br/>+ File Name]
-    DOC_CALL --> DOC_RESULT[Doc Result<br/>+ Page Number]
-    WEB_CALL --> CACHE_CHECK{Check Web Cache}
+    DATA_CALL --> DATA_RESULT[Veri Sonucu - Dosya Adi]
+    DOC_CALL --> DOC_RESULT[Dokuman Sonucu - Sayfa No]
+    WEB_CALL --> CACHE_CHECK{Web Onbellegi Kontrol}
     
-    CACHE_CHECK -->|Cache Hit| FAST_SEARCH[Use Cached Embeddings<br/>~10x Faster]
-    CACHE_CHECK -->|Cache Miss| SCRAPE[Scrape → Chunk → Embed<br/>Store in Cache]
+    CACHE_CHECK -->|Var| FAST_SEARCH[Onbellekteki Embeddinglari Kullan - 10x Hizli]
+    CACHE_CHECK -->|Yok| SCRAPE[Tara Parca Embed Onbellege Kaydet]
     
-    FAST_SEARCH --> WEB_RESULT[Web Result + URL]
+    FAST_SEARCH --> WEB_RESULT[Web Sonucu - URL]
     SCRAPE --> WEB_RESULT
     
-    DATA_RESULT --> MERGE{Synthesize Answers}
+    DATA_RESULT --> MERGE{Cevaplari Sentezle}
     DOC_RESULT --> MERGE
     WEB_RESULT --> MERGE
     
-    MERGE --> CONFLICT{Multiple Sources<br/>Conflict?}
+    MERGE --> CONFLICT{Coklu Kaynak Catismasi?}
     
-    CONFLICT -->|Yes| PRIORITY[Priority Order:<br/>1. Doc Agent<br/>2. Data Agent<br/>3. Web Agent]
-    CONFLICT -->|No| COMBINE[Combine Evidence]
+    CONFLICT -->|Evet| PRIORITY[Oncelik Sirasi: 1.Dokuman 2.Veri 3.Web]
+    CONFLICT -->|Hayir| COMBINE[Kanitlari Birlestir]
     
-    PRIORITY --> UNIT{Unit Conversion<br/>Needed?}
+    PRIORITY --> UNIT{Birim Donusumu Gerekli?}
     COMBINE --> UNIT
     
-    UNIT -->|Yes| CONVERT[Convert Units<br/>MWh→kWh, etc.]
-    UNIT -->|No| CONFIDENCE[Calculate Confidence<br/>Based on Source Quality]
+    UNIT -->|Evet| CONVERT[Birimleri Donustur - MWh to kWh vb]
+    UNIT -->|Hayir| CONFIDENCE[Guven Hesapla - Kaynak Kalitesine Gore]
     
     CONVERT --> CONFIDENCE
-    CONFIDENCE --> FINAL[Final Answer Package]
+    CONFIDENCE --> FINAL[Nihai Cevap Paketi]
     
     style CACHE_CHECK fill:#FF5100,stroke:#fff,stroke-width:2px,color:#fff
     style MERGE fill:#0891b2,stroke:#fff,stroke-width:2px
     style CONFIDENCE fill:#059669,stroke:#fff,stroke-width:2px
 ```
 
-#### 3. **Answer Synthesis Logic**
+#### 3. **Cevap Sentez Mantığı**
 
-The `synthesize_strict_answer` function merges results from multiple agents:
+`synthesize_strict_answer` fonksiyonu birden fazla ajandan gelen sonuçları birleştirir:
 
-**Priority Rules:**
-1. **Doc Agent** (highest priority): Internal company reports are most reliable
-2. **Data Agent**: Structured data from Excel/CSV
-3. **Web Agent** (lowest priority): External web sources used as fallback
+**Öncelik Kuralları:**
+1. **Doküman Ajanı** (en yüksek öncelik): Dahili şirket raporları en güvenilirdir
+2. **Veri Ajanı**: Excel/CSV'den yapılandırılmış veri
+3. **Web Ajanı** (en düşük öncelik): Harici web kaynakları yedek olarak kullanılır
 
-**Conflict Resolution:**
-- If sources disagree, the higher-priority source is used
-- All sources are shown in the evidence section for transparency
-- Unit conversions are applied before comparison
+**Çatışma Çözümü:**
+- Kaynaklar anlaşmazsa, daha yüksek öncelikli kaynak kullanılır
+- Şeffaflık için tüm kaynaklar kanıt bölümünde gösterilir
+- Karşılaştırmadan önce birim dönüşümleri uygulanır
 
 ---
 
-## 🔄 Document Reading Process & RAG Pipeline
+## 🔄 Doküman Okuma Süreci ve RAG Pipeline
 
-### Document Ingestion Pipeline
+### Doküman Alım Pipeline'ı
 
 ```mermaid
 flowchart LR
-    subgraph "Upload Phase"
-        PDF[PDF Files<br/>DOCX Files]
+    subgraph "Yukleme Asamasi"
+        PDF[PDF Dosyalari - DOCX Dosyalari]
     end
     
-    subgraph "Snippet Analysis"
-        SNIPPET[Extract First<br/>1000 chars]
-        LLM[LLM Classifier]
+    subgraph "Parca Analizi"
+        SNIPPET[Ilk 1000 Karakter Cikar]
+        LLM[LLM Siniflandirici]
     end
     
-    subgraph "Processing"
-        LOADER[PyPDFLoader<br/>UnstructuredWordDocumentLoader]
-        SPLITTER[Text Splitter<br/>Chunk Size: 1000<br/>Overlap: 200]
+    subgraph "Isleme"
+        LOADER[PyPDFLoader - UnstructuredWordDocumentLoader]
+        SPLITTER[Metin Bolme - Parca:1000 - Cakisma:200]
     end
     
     subgraph "Embedding"
-        EMBED[Qwen3 Embedding<br/>Dimension: 4096]
+        EMBED[Qwen3 Embedding - Boyut:4096]
     end
     
-    subgraph "Storage"
-        CHROMA[(ChromaDB<br/>Persistent Store<br/>With Metadata)]
+    subgraph "Depolama"
+        CHROMA[(ChromaDB - Kalici Depo - Metadata ile)]
     end
     
     PDF --> SNIPPET
@@ -382,201 +382,201 @@ flowchart LR
     style LLM fill:#FF5100,stroke:#fff,stroke-width:2px,color:#fff
 ```
 
-### RAG Query Flow (Doc Agent)
+### RAG Sorgu Akışı (Doküman Ajanı)
 
-When a question is asked, the Doc Agent performs the following steps:
+Bir soru sorulduğunda, Doküman Ajanı şu adımları gerçekleştirir:
 
 ```mermaid
 flowchart TD
-    START[User Question] --> EMBED_Q[Embed Question<br/>qwen3-embedding-8b]
+    START[Kullanici Sorusu] --> EMBED_Q[Soruyu Embedle - qwen3-embedding-8b]
     
-    EMBED_Q --> SEARCH[Vector Similarity Search<br/>MMR Algorithm]
+    EMBED_Q --> SEARCH[Vektor Benzerlik Aramasi - MMR Algoritmasi]
     
-    SEARCH --> PARAMS{Search Parameters}
-    PARAMS --> P1[k=5: Return top 5 chunks]
-    PARAMS --> P2[fetch_k=50: Consider 50 candidates]
-    PARAMS --> P3[lambda_mult=0.5: Balance similarity & diversity]
+    SEARCH --> PARAMS{Arama Parametreleri}
+    PARAMS --> P1[k=5: En iyi 5 parcayi dondur]
+    PARAMS --> P2[fetch_k=50: 50 aday degerlendir]
+    PARAMS --> P3[lambda_mult=0.5: Benzerlik ve cesitlilik dengesi]
     
-    P1 & P2 & P3 --> RETRIEVE[Retrieve Documents<br/>With Metadata]
+    P1 & P2 & P3 --> RETRIEVE[Dokumanla Metadata Getir]
     
-    RETRIEVE --> META{Extract Metadata}
-    META --> PAGE[Page Numbers<br/>0-indexed → 1-indexed]
-    META --> SOURCE[Source File Name]
+    RETRIEVE --> META{Metadata Cikar}
+    META --> PAGE[Sayfa Numaralari - 0-indexed to 1-indexed]
+    META --> SOURCE[Kaynak Dosya Adi]
     
-    PAGE & SOURCE --> FORMAT[Format Evidence<br/>"... (Kaynak: file.pdf, Sayfa 34)"]
+    PAGE & SOURCE --> FORMAT[Kanit Formatla - Kaynak dosya.pdf Sayfa 34]
     
-    FORMAT --> LLM[LLM Synthesis<br/>gpt-oss-120b]
+    FORMAT --> LLM[LLM Sentez - gpt-oss-120b]
     
-    LLM --> PROMPT{System Prompt}
-    PROMPT --> RULE1[Never fabricate information]
-    PROMPT --> RULE2[Always cite source + page]
-    PROMPT --> RULE3[Convert units if needed]
-    PROMPT --> RULE4[Return 'Not found' if no match]
+    LLM --> PROMPT{Sistem Promptu}
+    PROMPT --> RULE1[Asla bilgi uydurma]
+    PROMPT --> RULE2[Her zaman kaynak ve sayfa belirt]
+    PROMPT --> RULE3[Gerekirse birimleri donustur]
+    PROMPT --> RULE4[Esleme yoksa bulunamadi don]
     
-    RULE1 & RULE2 & RULE3 & RULE4 --> ANSWER[Structured Answer<br/>+ Evidence + Source]
+    RULE1 & RULE2 & RULE3 & RULE4 --> ANSWER[Yapilandirilmis Cevap Kanit Kaynak]
     
     style SEARCH fill:#0891b2,stroke:#fff,stroke-width:2px
     style LLM fill:#FF5100,stroke:#fff,stroke-width:2px,color:#fff
     style ANSWER fill:#059669,stroke:#fff,stroke-width:2px
 ```
 
-**Key RAG Configuration:**
-- **Embedding Model**: `qwen3-embedding-8b` (4096 dimensions)
-- **Search Algorithm**: MMR (Maximum Marginal Relevance) for diversity
-- **Chunk Size**: 1000 characters with 200-char overlap
-- **Retrieval Count**: Top 5 most relevant chunks from 50 candidates
+**Temel RAG Konfigürasyonu:**
+- **Embedding Modeli**: `qwen3-embedding-8b` (4096 boyut)
+- **Arama Algoritması**: MMR (Maksimum Marjinal İlgililik) çeşitlilik için
+- **Parça Boyutu**: 1000 karakter, 200 karakter çakışma ile
+- **Getirme Sayısı**: 50 adaydan en ilgili 5 parça
 
-**Metadata Preservation:**
+**Metadata Koruma:**
 ```python
-# PyPDFLoader automatically adds metadata:
+# PyPDFLoader otomatik olarak metadata ekler:
 {
-    "page": 33,  # 0-indexed page number
+    "page": 33,  # 0-indexed sayfa numarası
     "source": "/path/to/report.pdf"
 }
 
-# Doc Agent converts to user-friendly format:
-"150 MWh energy consumption (Kaynak: Sustainability_Report.pdf, Sayfa 34)"
+# Doküman Ajanı kullanıcı dostu formata çevirir:
+"150 MWh enerji tüketimi (Kaynak: Surdurulebilirlik_Raporu.pdf, Sayfa 34)"
 ```
 
 ---
 
-## 📊 Performance Optimization Strategy
+## 📊 Performans Optimizasyon Stratejisi
 
-### Parallel Processing Architecture
+### Paralel İşleme Mimarisi
 
 ```mermaid
 gantt
-    title Question Processing Timeline (5 Parallel Workers)
+    title Soru Isleme Zaman Cetveli (5 Paralel Worker)
     dateFormat X
     axisFormat %s
     
     section Worker 1
-    Question 1 :0, 12
-    Question 6 :12, 20
+    Soru 1 :0, 12
+    Soru 6 :12, 20
     
     section Worker 2
-    Question 2 :0, 8
-    Question 7 :8, 15
+    Soru 2 :0, 8
+    Soru 7 :8, 15
     
     section Worker 3
-    Question 3 :0, 15
-    Question 8 :15, 22
+    Soru 3 :0, 15
+    Soru 8 :15, 22
     
     section Worker 4
-    Question 4 :0, 10
-    Question 9 :10, 18
+    Soru 4 :0, 10
+    Soru 9 :10, 18
     
     section Worker 5
-    Question 5 :0, 9
-    Question 10 :9, 14
+    Soru 5 :0, 9
+    Soru 10 :9, 14
 ```
 
-**Configuration:**
+**Konfigürasyon:**
 ```python
 # core/config.py
 class AppConfig:
-    MAX_PARALLEL_WORKERS = 5      # Concurrent threads
-    AGENT_TIMEOUT_SECONDS = 60    # Timeout per question
+    MAX_PARALLEL_WORKERS = 5      # Eşzamanlı thread sayısı
+    AGENT_TIMEOUT_SECONDS = 60    # Soru başına timeout
 ```
 
-**Expected Performance:**
-- **Serial Processing**: 25 questions × 9s avg = 225 seconds
-- **Parallel Processing**: 25 questions ÷ 5 workers = ~45 seconds
-- **Speedup**: ~400% faster with parallelization
+**Beklenen Performans:**
+- **Seri İşleme**: 25 soru × 9s ortalama = 225 saniye
+- **Paralel İşleme**: 25 soru ÷ 5 worker = ~45 saniye
+- **Hızlanma**: Paralelleştirme ile ~%400 daha hızlı
 
-### Web Scraping Cache Strategy
+### Web Tarama Önbellek Stratejisi
 
 ```mermaid
 flowchart TD
-    URL[Web URL Query] --> HASH[Generate URL Hash<br/>MD5 or SHA256]
+    URL[Web URL Sorgusu] --> HASH[URL Hash Uret - MD5 veya SHA256]
     
-    HASH --> CHECK{Check ChromaDB<br/>Collection: web_content}
+    HASH --> CHECK{ChromaDB Kontrol - Koleksiyon: web_content}
     
-    CHECK -->|Cache Hit ✅| CACHED[Retrieve Cached<br/>Embeddings]
-    CHECK -->|Cache Miss ❌| SCRAPE[Scrape URL<br/>Firecrawl API]
+    CHECK -->|Onbellek Var| CACHED[Onbellekteki Embeddinglari Getir]
+    CHECK -->|Onbellek Yok| SCRAPE[URL Tara - Firecrawl API]
     
-    CACHED --> SEARCH1[Similarity Search<br/>~100ms]
-    SCRAPE --> CHUNK[Chunk Text<br/>1000 chars]
-    CHUNK --> EMBED[Generate Embeddings<br/>~2s]
-    EMBED --> STORE[Store in ChromaDB<br/>with URL metadata]
-    STORE --> SEARCH2[Similarity Search<br/>~100ms]
+    CACHED --> SEARCH1[Benzerlik Aramasi - 100ms]
+    SCRAPE --> CHUNK[Metni Parca - 1000 karakter]
+    CHUNK --> EMBED[Embedding Uret - 2s]
+    EMBED --> STORE[ChromaDB Kaydet - URL metadata ile]
+    STORE --> SEARCH2[Benzerlik Aramasi - 100ms]
     
-    SEARCH1 --> RESULT{Result}
+    SEARCH1 --> RESULT{Sonuc}
     SEARCH2 --> RESULT
     
-    RESULT --> TIME1[⚡ Cache Hit: ~100ms]
-    RESULT --> TIME2[🐌 Cache Miss: ~10s]
+    RESULT --> TIME1[Onbellek Var: 100ms]
+    RESULT --> TIME2[Onbellek Yok: 10s]
     
     style CHECK fill:#FF5100,stroke:#fff,stroke-width:2px,color:#fff
     style CACHED fill:#059669,stroke:#fff,stroke-width:2px
     style SCRAPE fill:#dc2626,stroke:#fff,stroke-width:2px
 ```
 
-**Cache Benefits:**
-- **First Query**: ~10 seconds (scrape + chunk + embed + store)
-- **Subsequent Queries**: ~100ms (direct embedding lookup)
-- **Speedup**: ~100x faster on repeated URLs
-- **Storage**: ChromaDB collection `web_content` in `data/chroma_db/`
+**Önbellek Avantajları:**
+- **İlk Sorgu**: ~10 saniye (tarama + parçalama + embedding + kaydetme)
+- **Sonraki Sorgular**: ~100ms (doğrudan embedding araması)
+- **Hızlanma**: Tekrarlanan URL'lerde ~100x daha hızlı
+- **Depolama**: ChromaDB koleksiyonu `web_content` - `data/chroma_db/` içinde
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Hızlı Başlangıç
 
-### Prerequisites
+### Gereksinimler
 - Python 3.11+
-- KLOUDEKS API key (or OpenAI-compatible endpoint)
-- Firecrawl API key (for web scraping)
+- KLOUDEKS API anahtarı (veya OpenAI-uyumlu endpoint)
+- Firecrawl API anahtarı (web tarama için)
 
-### Installation
+### Kurulum
 
-1. **Clone the repository**
+1. **Depoyu klonlayın**
 ```bash
 git clone <repo-url>
 cd finsage
 ```
 
-2. **Install dependencies**
+2. **Bağımlılıkları yükleyin**
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Configure environment**
+3. **Ortamı yapılandırın**
 
-Create a `.env` file:
+Bir `.env` dosyası oluşturun:
 ```env
 # LLM & Embedding API
-MIA_API_KEY=your_kloudeks_api_key_here
+MIA_API_KEY=kloudeks_api_anahtariniz
 MIA_BASE_URL=https://mia.csp.kloudeks.com/v1
 
 # Web Scraper API
-FIRECRAWL_API_KEY=your_firecrawl_api_key_here
+FIRECRAWL_API_KEY=firecrawl_api_anahtariniz
 ```
 
-4. **Run the application**
+4. **Uygulamayı çalıştırın**
 ```bash
 streamlit run app.py
 ```
 
-The app will open at `http://localhost:8501`
+Uygulama `http://localhost:8501` adresinde açılacaktır
 
 ---
 
-## 📖 Usage Guide
+## 📖 Kullanım Kılavuzu
 
-### 1. Upload Data Sources
+### 1. Veri Kaynaklarını Yükleyin
 
-**Sidebar Options:**
-- **Upload Reports**: PDF documents, Word files, Excel sheets, CSV files
-  - PDFs/DOCX → Processed into vector database (ChromaDB)
-  - Excel/CSV → Converted to HTML tables and stored in RAM
-- **Add Web URLs**: Click "🌐 Web Tarama Ayarları" to add URLs
-  - Toggle "Crawl Mode" to scrape linked pages recursively
-  - Configure depth (1-5 levels) and page limit (5-50 pages)
+**Kenar Çubuğu Seçenekleri:**
+- **Rapor Yükle**: PDF dokümanlar, Word dosyaları, Excel sayfaları, CSV dosyaları
+  - PDF/DOCX → Vektör veritabanına (ChromaDB) işlenir
+  - Excel/CSV → HTML tablolarına dönüştürülür ve RAM'de saklanır
+- **Web URL Ekle**: URL eklemek için "🌐 Web Tarama Ayarları"na tıklayın
+  - Bağlantılı sayfaları özyinelemeli taramak için "Tarama Modu"nu aktifleştirin
+  - Derinlik (1-5 seviye) ve sayfa limiti (5-50 sayfa) yapılandırın
 
-### 2. Load Question Set
+### 2. Soru Setini Yükleyin
 
-- Upload a JSON file containing your questions
-- Format example:
+- Sorularınızı içeren bir JSON dosyası yükleyin
+- Format örneği:
 ```json
 {
   "formId": "123",
@@ -600,104 +600,104 @@ The app will open at `http://localhost:8501`
 }
 ```
 
-### 3. Generate Answers
+### 3. Cevapları Oluşturun
 
-Click **"✨ Yapay Zeka ile Formu Doldur"**
+**"✨ Yapay Zeka ile Formu Doldur"** butonuna tıklayın
 
-The system will:
-1. ✅ Process questions in parallel (5 workers)
-2. 📊 Show real-time progress with live updates
-3. ⏱️ Display performance metrics upon completion
-4. 📝 Fill the form with AI-generated answers + evidence
+Sistem:
+1. ✅ Soruları paralel işler (5 worker)
+2. 📊 Canlı güncellemelerle gerçek zamanlı ilerleme gösterir
+3. ⏱️ Tamamlandıktan sonra performans metriklerini gösterir
+4. 📝 Formu AI üretimi cevaplar + kanıtlarla doldurur
 
-**Performance Display:**
+**Performans Gösterimi:**
 ```
 📊 SORU CEVAPLAMA PERFORMANS RAPORU
 ⏱️ Gerçek Toplam Süre: 45.2s (butona basıştan itibaren)
 📝 Toplam Soru: 25
-⚡ Soru Süreleri Toplamı: 3m 45s (225s)
+⚡ Soru Süreleri Toplamı: 3d 45s (225s)
 📊 Ortalama Süre/Soru: 9.0s
 🚀 En Hızlı: 2.1s
 🐌 En Yavaş: 23.4s
 ⚡ Paralel Kazanç: %397 daha hızlı
 ```
 
-### 4. Review & Submit
+### 4. İnceleyin & Gönderin
 
-- Review AI suggestions with confidence scores (0-100)
-- Check evidence and source citations
-- Manually adjust answers if needed
-- Click **"✅ Formu Onayla ve Kaydet"**
-- Download results as JSON
+- Güven skorlarıyla (0-100) AI önerilerini inceleyin
+- Kanıt ve kaynak atıflarını kontrol edin
+- Gerekirse cevapları manuel olarak ayarlayın
+- **"✅ Formu Onayla ve Kaydet"** butonuna tıklayın
+- Sonuçları JSON olarak indirin
 
-**Confidence Indicators:**
-- 🟢 **70-100**: High confidence (strong evidence from reliable sources)
-- 🟡 **40-69**: Medium confidence (partial evidence or external sources)
-- 🔴 **0-39**: Low confidence (weak or conflicting evidence)
+**Güven Göstergeleri:**
+- 🟢 **70-100**: Yüksek güven (güvenilir kaynaklardan güçlü kanıt)
+- 🟡 **40-69**: Orta güven (kısmi kanıt veya harici kaynaklar)
+- 🔴 **0-39**: Düşük güven (zayıf veya çelişkili kanıt)
 
 ---
 
-## ⚙️ Configuration Options
+## ⚙️ Konfigürasyon Seçenekleri
 
 ### `core/config.py`
 
 ```python
 class AppConfig:
-    # Performance Settings
-    MAX_PARALLEL_WORKERS = 5           # Concurrent question processing
-    AGENT_TIMEOUT_SECONDS = 60         # Timeout per question
+    # Performans Ayarları
+    MAX_PARALLEL_WORKERS = 5           # Eşzamanlı soru işleme
+    AGENT_TIMEOUT_SECONDS = 60         # Soru başına timeout
     
-    # Retrieval Settings
-    DOC_RETRIEVAL_K = 5                # Number of chunks to retrieve
-    MIN_DOC_RESPONSE_LENGTH = 50       # Minimum viable doc response
-    MIN_DATA_RESPONSE_LENGTH = 20      # Minimum viable data response
+    # Getirme Ayarları
+    DOC_RETRIEVAL_K = 5                # Getirilecek parça sayısı
+    MIN_DOC_RESPONSE_LENGTH = 50       # Minimum geçerli doküman yanıtı
+    MIN_DATA_RESPONSE_LENGTH = 20      # Minimum geçerli veri yanıtı
     
-    # Content Limits
-    WEB_CONTENT_MAX_CHARS = 40000      # Max web content to process
-    SNIPPET_MAX_CHARS = 1000           # File snippet for LLM analysis
+    # İçerik Limitleri
+    WEB_CONTENT_MAX_CHARS = 40000      # İşlenecek maksimum web içeriği
+    SNIPPET_MAX_CHARS = 1000           # LLM analizi için dosya parçası
     
-    # Confidence Thresholds
-    HIGH_CONFIDENCE_THRESHOLD = 70     # Green indicator
-    MEDIUM_CONFIDENCE_THRESHOLD = 40   # Yellow indicator
-    LOW_CONFIDENCE_THRESHOLD = 0       # Red indicator
+    # Güven Eşikleri
+    HIGH_CONFIDENCE_THRESHOLD = 70     # Yeşil gösterge
+    MEDIUM_CONFIDENCE_THRESHOLD = 40   # Sarı gösterge
+    LOW_CONFIDENCE_THRESHOLD = 0       # Kırmızı gösterge
 ```
 
-### LLM Models
+### LLM Modelleri
 
 ```python
-# Embedding Model (4096 dimensions)
+# Embedding Modeli (4096 boyut)
 embedding_model = OpenAIEmbeddings(
     model="qwen3-embedding-8b",
     openai_api_key=API_KEY,
     openai_api_base=KLOUDEKS_BASE_URL
 )
 
-# Reasoning LLM (120B parameters)
+# Muhakeme LLM (120B parametreler)
 llm_reasoning = ChatOpenAI(
     model="gpt-oss-120b",
     openai_api_key=API_KEY,
     openai_api_base=KLOUDEKS_BASE_URL,
-    temperature=0,      # Deterministic for auditing
-    max_tokens=4000     # Long-form answers
+    temperature=0,      # Denetim için deterministik
+    max_tokens=4000     # Uzun form cevaplar
 )
 ```
 
-### Web Scraper Settings
+### Web Tarayıcı Ayarları
 
-- **Crawl Mode**: Follow links on target pages (boolean)
-- **Max Depth**: How many levels deep to crawl (1-5)
-- **Page Limit**: Maximum pages to scrape per URL (5-50)
+- **Tarama Modu**: Hedef sayfalardaki linkleri takip et (boolean)
+- **Maksimum Derinlik**: Ne kadar derin taranacağı (1-5)
+- **Sayfa Limiti**: URL başına maksimum taranacak sayfa (5-50)
 
 ---
 
-## 🧪 Testing
+## 🧪 Test
 
-Run end-to-end tests:
+Uçtan uca testleri çalıştırın:
 ```bash
 python -m pytest tests/test_end_to_end.py -v
 ```
 
-Test individual components:
+Tek tek bileşenleri test edin:
 ```bash
 python -m pytest tests/test_web_scraper.py -v
 python -m pytest tests/test_cache.py -v
@@ -706,16 +706,16 @@ python -m pytest tests/test_agents.py -v
 
 ---
 
-## 📝 Logging
+## 📝 Loglama
 
-Logs are written to `logs/finsage_YYYYMMDD.log` with daily rotation.
+Loglar günlük rotasyon ile `logs/finsage_YYYYMMDD.log` dosyasına yazılır.
 
-**Log Levels:**
-- **INFO**: Processing steps, timing, successful operations
-- **WARNING**: Non-critical issues (e.g., missing metadata)
-- **ERROR**: Failures that need attention (e.g., API errors)
+**Log Seviyeleri:**
+- **INFO**: İşleme adımları, zamanlama, başarılı operasyonlar
+- **WARNING**: Kritik olmayan sorunlar (ör. eksik metadata)
+- **ERROR**: Dikkat gerektiren hatalar (ör. API hataları)
 
-View real-time logs:
+Gerçek zamanlı logları görüntüleyin:
 ```bash
 # Linux/Mac
 tail -f logs/finsage_$(date +%Y%m%d).log
@@ -726,74 +726,74 @@ Get-Content logs/finsage_$(Get-Date -Format "yyyyMMdd").log -Wait
 
 ---
 
-## 🛠️ Troubleshooting
+## 🛠️ Sorun Giderme
 
-### Common Issues
+### Yaygın Sorunlar
 
-**1. ChromaDB Import Error**
+**1. ChromaDB İçe Aktarma Hatası**
 ```bash
 pip install --upgrade chromadb
 ```
 
-**2. API Key Errors**
-- Verify `.env` file contains `MIA_API_KEY` and `FIRECRAWL_API_KEY`
-- Check API key validity and quota
+**2. API Anahtarı Hataları**
+- `.env` dosyasının `MIA_API_KEY` ve `FIRECRAWL_API_KEY` içerdiğini doğrulayın
+- API anahtarı geçerliliğini ve kotasını kontrol edin
 
-**3. Memory Issues with Large Files**
-- Increase chunk size in `ingestion/processor.py`
-- Reduce `MAX_PARALLEL_WORKERS` in `core/config.py`
-- Process fewer PDFs at once
+**3. Büyük Dosyalarla Bellek Sorunları**
+- `ingestion/processor.py` içinde parça boyutunu artırın
+- `core/config.py` içinde `MAX_PARALLEL_WORKERS` değerini azaltın
+- Aynı anda daha az PDF işleyin
 
-**4. Timeout Errors**
-- Increase `AGENT_TIMEOUT_SECONDS` in `core/config.py`
-- Reduce web crawl depth/limit
-- Check internet connection for web scraping
+**4. Timeout Hataları**
+- `core/config.py` içinde `AGENT_TIMEOUT_SECONDS` değerini artırın
+- Web tarama derinliği/limitini azaltın
+- Web tarama için internet bağlantısını kontrol edin
 
-**5. Unit Conversion Errors**
-- Review `core/unit_converter.py` for supported conversions
-- Check logs for specific conversion failures
-- Verify input data format
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-**Coding Standards:**
-- Follow PEP 8 for Python code
-- Add docstrings to all functions
-- Update README for any architectural changes
-- Include tests for new features
+**5. Birim Dönüşüm Hataları**
+- Desteklenen dönüşümler için `core/unit_converter.py` dosyasını inceleyin
+- Belirli dönüşüm hataları için logları kontrol edin
+- Girdi veri formatını doğrulayın
 
 ---
 
-## 📄 License
+## 🤝 Katkıda Bulunma
 
-This project is proprietary and confidential.
+1. Depoyu fork edin
+2. Bir özellik dalı oluşturun (`git checkout -b feature/harika-ozellik`)
+3. Değişiklikleri commit edin (`git commit -m 'Harika özellik ekle'`)
+4. Dala push edin (`git push origin feature/harika-ozellik`)
+5. Bir Pull Request açın
 
----
-
-## 🙏 Acknowledgments
-
-- **LangChain**: Agent framework and RAG implementation
-- **Streamlit**: Beautiful reactive UI framework
-- **ChromaDB**: High-performance vector database
-- **Firecrawl**: Reliable web scraping API
-- **KLOUDEKS**: LLM and embedding infrastructure
-
----
-
-## 📧 Contact
-
-For questions or support, please contact the KKB Greendeks development team.
+**Kodlama Standartları:**
+- Python kodu için PEP 8'i takip edin
+- Tüm fonksiyonlara docstring ekleyin
+- Mimari değişiklikler için README'yi güncelleyin
+- Yeni özellikler için testler ekleyin
 
 ---
 
-**Built with ❤️ for KKB Greendeks**
+## 📄 Lisans
 
-*Last Updated: December 2025*
+Bu proje özel ve gizlidir.
+
+---
+
+## 🙏 Teşekkürler
+
+- **LangChain**: Ajan framework'ü ve RAG implementasyonu
+- **Streamlit**: Güzel reaktif UI framework'ü
+- **ChromaDB**: Yüksek performanslı vektör veritabanı
+- **Firecrawl**: Güvenilir web tarama API'si
+- **KLOUDEKS**: LLM ve embedding altyapısı
+
+---
+
+## 📧 İletişim
+
+Sorular veya destek için lütfen KKB Greendeks geliştirme ekibi ile iletişime geçin.
+
+---
+
+**❤️ ile KKB Greendeks için geliştirildi**
+
+*Son Güncelleme: Aralık 2025*
