@@ -14,17 +14,6 @@ FinSage, sürdürülebilirlik ve ESG anketlerini otomatik olarak dolduran geliş
 - **Web Tarayıcı Ajanı**: ChromaDB tabanlı kalıcı önbellekleme ile web içeriği getirir ve analiz eder
 - **Değerlendirici Ajan**: Kaynak kalitesi ve veri tamlığına dayalı güven skoru hesaplar
 
-### ⚡ Yüksek Performans
-- **Paralel İşleme**: ThreadPoolExecutor ile aynı anda birden fazla soruyu işler (5 worker)
-- **Akıllı Önbellekleme**: Web içeriği için ChromaDB tabanlı kalıcı önbellek (~10x hızlanma)
-- **Gerçek Zamanlı Metrikler**: İşleme süresi, soru başına istatistikler ve paralel kazançları takip eder
-- **Asenkron Operasyonlar**: Canlı ilerleme göstergeleri ile bloke olmayan arayüz
-
-### 🎨 Premium Arayüz
-- **Koyu Tema**: Glassmorphism ile güzel KKB markalı koyu mod arayüzü
-- **Canlı İlerleme**: Analiz sırasında gerçek zamanlı ilerleme çubukları ve durum güncellemeleri
-- **Performans Panosu**: Tamamlandıktan sonra detaylı zamanlama istatistikleri ve hızlanma metrikleri
-- **Kanıt Gösterimi**: Tam şeffaflık için AI güveni, kaynaklar, kanıt metni ve sayfa numaraları gösterir
 
 ### 🔍 Akıllı Özellikler
 - **LLM Tabanlı Kaynak Tespiti**: Otomatik dosya tipi tespiti ve yönlendirme stratejisi
